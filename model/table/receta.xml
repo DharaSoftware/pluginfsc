@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Document   : receta.xml
+   Description:
+        Estructura de la tabla receta.
+-->
+<tabla>
+  <columna>
+    <nombre>idreceta</nombre>
+    <tipo>varchar(6)</tipo>
+    <nulo>NO</nulo>
+  </columna>
+  <columna>
+    <nombre>descripcion</nombre>
+    <tipo>text</tipo>
+    <nulo>NO</nulo>
+  </columna>
+  <columna>
+    <nombre>idalmacening</nombre>
+    <tipo>varchar(4)</tipo>
+    <nulo>YES</nulo>
+  </columna>
+  <columna>
+    <nombre>idalmacenres</nombre>
+    <tipo>varchar(4)</tipo>
+    <nulo>YES</nulo>
+  </columna>
+  <columna>
+    <nombre>observaciones</nombre>
+    <tipo>text</tipo>
+    <nulo>NO</nulo>
+  </columna>
+  <columna>
+    <nombre>producto_res</nombre>
+    <tipo>varchar(50)</tipo>
+    <nulo>YES</nulo>
+  </columna>
+  <columna>
+    <nombre>produccion</nombre>
+    <tipo>integer</tipo>
+    <nulo>YES</nulo>
+  </columna>
+  <restriccion>
+    <nombre>receta_pkey</nombre>
+    <consulta>PRIMARY KEY (idreceta)</consulta>
+  </restriccion>
+</tabla>

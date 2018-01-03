@@ -1,0 +1,143 @@
+{include="header"}
+<script type="text/javascript">
+   function show_nueva_receta()
+   {
+      $("#modal_nueva_receta").modal('show');
+      document.f_nueva_receta.referencia.focus();
+   }
+
+    $(document).ready(function() {
+      if(window.location.hash.substring(1) == 'Nuevo')
+      {
+         show_nueva_receta();
+      }
+
+    $("#b_nueva_receta").click(function(event) {
+         event.preventDefault();
+         show_nueva_receta();
+      });
+});
+</script>
+<!-- Forma modal para la ventana emegente de nueva receta-->
+
+<form class="form-horizontal" role="form" name="f_nueva_receta" action="index.php?page=nueva_receta" method="post">
+   <div class="modal" id="modal_nueva_receta">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+               <h4 class="modal-title">Nueva Receta</h4>
+               <p class="help-block">
+                  Identificador de la Receta para productos Compuestos.
+               </p>
+            </div>
+            <div class="modal-body">
+               <div class="form-group">
+                  <label class="col-sm-2 control-label">Referencia</label>
+                  <div class="col-sm-10">
+                     <input class="form-control" type="text" name="referencia" maxlength="18" autocomplete="off"/>
+                     <p class="help-block">
+                        Dejar en blanco para asignar una referencia automática.
+                     </p>
+                  </div>
+               </div>
+               <div class="form-group">
+                  <label class="col-sm-2 control-label">Descripcion</label>
+                  <div class="col-sm-10">
+                     <input class="form-control" type="text" name="descripcion" autocomplete="off" required/>
+                  </div>
+               </div>
+               <div class="form-group">
+                  <label class="col-sm-2 control-label">Articulo Resultante</label>
+                  <div class="col-sm-10">
+                     <input class="form-control" type="text" name="articulo_res" autocomplete="off" required/>
+                  </div>
+               </div>
+             </div>
+            <div class="modal-footer">
+               <div class="checkbox pull-left">
+                  <label>
+                     <input type="checkbox" name="nostock" value="TRUE"/> Si no existe creelo.
+                  </label>
+               </div>
+               <button class="btn btn-sm btn-primary" type="submit">
+                  <span class="glyphicon glyphicon-floppy-disk"></span>&nbsp; Guardar
+               </button>
+            </div>
+         </div>
+      </div>
+   </div>
+</form>
+
+<!--Bontones del top de recargar, y nueva receta-->
+<div class="container-fluid" style="margin-bottom: 10px;">
+   <div class="row">
+      <div class="col-xs-12">
+         <div class="btn-group hidden-xs">
+            <a class="btn btn-sm btn-default" href="{$fsc->url()}" title="Recargar la página">
+               <span class="glyphicon glyphicon-refresh"></span>
+            </a>
+            {if="$fsc->page->is_default()"}
+            <a class="btn btn-sm btn-default active" href="{$fsc->url()}&amp;default_page=FALSE" title="Marcada como página de inicio (pulsa de nuevo para desmarcar)">
+               <i class="fa fa-bookmark" aria-hidden="true"></i>
+            </a>
+            {else}
+            <a class="btn btn-sm btn-default" href="{$fsc->url()}&amp;default_page=TRUE" title="Marcar como página de inicio">
+               <i class="fa fa-bookmark-o" aria-hidden="true"></i>
+            </a>
+            {/if}
+         </div>
+         <div class="btn-group">
+            <a id="b_nueva_receta" class="btn btn-sm btn-success" href="#">
+               <span class="glyphicon glyphicon-plus"></span>
+               <span class="hidden-xs">&nbsp;Nuevo</span>
+            </a>
+        </div>
+      </div>
+   </div>
+</div>
+
+<!--Encabezado de productos compuestos-->
+
+<div class="container-fluid" style="margin-top: 15px;">
+  <div class="row" >
+    <div class="col-xs-12">
+      <h2><span class="glyphicon glyphicon-arrow-right"></span>Productos Compuestos</h2>
+    </div>
+  </div>
+</div>
+
+<!--Presentacion de la lista de las Recetas -->
+
+  <div class="container-fluid" style="margin-top: 15px;">
+  <div class="table-responsive">
+    {if="count($fsc->resultados)>1"}
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th class="text-left">Referencia</th>
+          <th class="text-left">Descripcion</th>
+          <th class="text-left">Produccion</th>
+          <th class="text-left">Ultima Produccion</th>
+        </tr>
+      </thead>
+      <tr>
+        {loop="$fsc->resultados"}
+        <tr>
+        <td>{$value['idreceta']}</td>
+        <td>{$value['descripcion']}</td>
+        <td>{$value['produccion']}</td>
+        <td>{$value['produccion']}</td>
+      </tr>
+        {/loop}
+      </tr>
+    </table>
+    {else}
+    <tr class="warning">
+      <td colspan="7">Ningun Receta encontrado. Pulsa el botón <b>Nuevo</b> para crear uno.</td>
+    </tr>
+    {/if}
+  </div>
+</div>
+
+{include="footer"}
