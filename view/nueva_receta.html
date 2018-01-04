@@ -25,71 +25,51 @@
        <!--Encabezado de productos compuestos-->
        <div class="row" >
          <div class="col-xs-12">
-           <h2><span class="glyphicon glyphicon-list"></span>&nbsp;Nombre Receta</h2>
+           <h2><span class="glyphicon glyphicon-list"></span>&nbsp;{$fsc->receta->idreceta}: &nbsp;{$fsc->receta->descripcion}</h2>
          </div>
        </div>
       <!--Forma de entrada de Datos de la receta-->
       <form id="nreceta" name="f_new_receta" action="{$fsc->url()}" method="post">
+        <input id="nr_referencia" name="nr_idreceta"  value="{$fsc->receta->idreceta}" type="hidden"/>
         <div class="row" style="margin-top: 15px;">
           <div class="form-group">
-                <div class="col-sm-4"><b>Descripción</b>
-                    <input type="text" name="nr_descripcion" class="form-control" placeholder="Descripción de la  Receta" autocomplete="off" required=""/>
+                <div class="col-xs-4"><b>Descripción</b>
+                    <input type="text" name="nr_descripcion" class="form-control" value="{$fsc->receta->descripcion}" autocomplete="off" required=""/>
                 </div>
-                <div class="col-sm-4"><b>Articulo Resultante</b>
-                    <input type="text" name="nr_articulo_res" class="form-control" placeholder="Nombre Articulo Resultante" autocomplete="off" readonly="readonly" required=""/>
+                <div class="col-xs-4"><b>Articulo Resultante</b>
+                    <input type="text" name="nr_articulo_res" class="form-control" value="{$fsc->receta->producto_res}" autocomplete="off" readonly="readonly" required=""/>
                 </div>
-                <div class="col-sm-2"><b>Cantidad</b>
+                <div class="col-xs-2"><b>Cantidad</b>
                     <input type="text" name="nr_cantidad" class="form-control" placeholder="Cantidad" autocomplete="off" required=""/>
                 </div>
           </div>
         </div>
-      <div class="row" style="margin-top: 10px;">
-        <!-- Bloque de Almacenes -->
-        {if="$fsc->multi_almacen"}
-        <div class="col-sm-2">
-            <div class="form-group">
-                <a href="{$fsc->almacen->url()}">Almacén</a>:
-                <select name="nr_almacening" class="form-control" id="codalmacen" onchange="usar_almacen()">
-                    {loop="$fsc->almacen->all()"}
-                    {if="$value->is_default()"}
-                    <option value="{$value->codalmacen}" selected="">{$value->nombre}</option>
-                    {else}
-                    <option value="{$value->codalmacen}">{$value->nombre}</option>
-                    {/if}
-                    {/loop}
-                </select>
-            </div>
-        </div>
-        {else}
-        <div class="col-sm-2">
-            <input type="hidden" name="almacen" value="{$fsc->empresa->codalmacen}" id="codalmacen"/>
-        </div>
-        {/if}
-        {if="$fsc->multi_almacen"}
-        <div class="col-sm-2">
-            <div class="form-group">
-                <a href="{$fsc->almacen->url()}">Almacén</a>:
-                <select name="nr_almacening" class="form-control" id="codalmacen" onchange="usar_almacen()">
-                    {loop="$fsc->almacen->all()"}
-                    {if="$value->is_default()"}
-                    <option value="{$value->codalmacen}" selected="">{$value->nombre}</option>
-                    {else}
-                    <option value="{$value->codalmacen}">{$value->nombre}</option>
-                    {/if}
-                    {/loop}
-                </select>
-            </div>
-        </div>
-        {else}
-        <div class="col-sm-2">
-            <input type="hidden" name="almacen" value="{$fsc->empresa->codalmacen}" id="codalmacen"/>
-        </div>
-        {/if}
 
-      <div class="col-sm-4"><b>Observaciones</b>
-        <textarea name="nr_observaciones" class="form-control" placeholder="Observaciones"></textarea>
+      <div class="row" style="margin-top: 15px;">
+        <!-- Bloque de Almacenes Alamcen de ingredientes -->
+        <div class="form-group">
+          <div class="col-xs-3"><b>Almacén de Ingredientes:</b>
+                <select name="nr_almacening" class="form-control" id="nr_idalmacening">
+                    <option value="">------</option>
+                    {loop="$fsc->almacen->all()"}
+                      <option value="{$value->codalmacen}">{$value->nombre}</option>
+                    {/loop}
+                </select>
+          </div>
+          <!-- Bloque de Almacenes Alamcen Producto resultante -->
+          <div class="col-xs-3"><b>Almacén de Productos resultantes:</b>
+                <select name="nr_almacenres" class="form-control" id="nr_idalmaceres" >
+                    <option value="">------</option>
+                    {loop="$fsc->almacen->all()"}
+                      <option value="{$value->codalmacen}">{$value->nombre}</option>
+                    {/loop}
+                </select>
+          </div>
+          <div class="col-xs-4"><b>Observaciones</b>
+            <textarea name="nr_observaciones" class="form-control" placeholder="Observaciones"></textarea>
+          </div>
       </div>
-      </div>
+    </div>
   </form>
 </div>
   <!-- Bloque de las lineas de ingredientes -->
@@ -114,7 +94,7 @@
         </div>
         <div role="tabpanel" class="tab-pane" id="detalles"></div>
     </div>
-
+</div>
 
 
 {include="footer"}

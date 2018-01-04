@@ -31,7 +31,19 @@
  */
 
 require_model('receta.php');
+if (file_exists("facturascripts/plugins/factura_base"))
+{
+  require_model('facturascripts/plugins/factura_base/model/articulo.php');
+  require_model('facturascripts/plugins/factura_base/model/almacen.php');
+}else {
+  echo "requiere que el plugin fatura Base este instalado";
+}
+
 class nueva_receta  extends fs_controller {
+
+    public $n_idreceta;
+    public $n_descripcion;
+    public $n_articulo_res;
 
    public function __construct() {
 
@@ -43,6 +55,23 @@ class nueva_receta  extends fs_controller {
       $this->allow_delete = $this->user->allow_delete_on(__CLASS__);
       /*Load data with estructure data*/
       parent::private_core();
+
+      $receta = new receta();
+      $alamcen = new almacen();
+
+
+      if (isset($_POST['referencia'])) {
+        if ($receta->exists($_POST['referencia']))
+        {
+          $this->new_error_msg("Identificado de Receta ya existe");
+        }else {
+          $this->receta->idreceta = $_POST['referencia'];
+          $this->receta->descripcion = $_POST['descripcion'];
+          $this->receta->producto_res = $_POST['articulo_res'];
+        }
+      }
+
+
 
    }
 

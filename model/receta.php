@@ -29,42 +29,42 @@ class receta extends fs_model {
    * Clave primaria. Varchar (6).
    * @var string
    */
-   private $idreceta;
+   public $idreceta;
    /**
     * Descripción de la receta. Tipo text, sin límite de caracteres.
     * @var string
     */
-   private $descripcion;
+   public $descripcion;
    /**
     * Código del almacen de ingredientes al que pertenece. En la clase almacen.
     * @var string
     */
-   private $idalmacening;
+   Public $idalmacening;
    /**
     * Código del almacen de articulos resultantes de la receta al que pertenece. En la clase almacen.
     * @var string
     */
-   private $idalmacenres;
+   Public $idalmacenres;
    /**
     * observaciones de la receta. Tipo text, sin límite de caracteres.
     * @var string
     */
-   private $observaciones;
+   Public $observaciones;
    /**
     *  Nombre del articulo Resultante al utilizar la receta. Tipo text, sin límite de caracteres.
     * @var string
     */
-   private $producto_res;
+   public $producto_res;
    /**
     *  Referencia de articulo resultante. Clave foranea tabla de articulos modelo articulo.
     * @var string
     */
-   private $idarticulo;
+   public $idarticulo;
      /**
     * Cantidad de articulos a producir por la receta.
     * @var double
     */
-   private $produccion;
+   public $produccion;
 
    private static $column_list;
    private $exists;
@@ -78,19 +78,6 @@ class receta extends fs_model {
       } else {
          $this->clear();
       }
-   }
-   /**
-    * Verifica la exitencia de la receta
-    * @return boolean
-    */
-   public function exists() {
-     if (!$this->exists) {
-         if ($this->db->select("SELECT idreceta FROM " . $this->table_name . " WHERE idreceta = " . $this->var2str($this->idreceta) . ";")) {
-             $this->exists = TRUE;
-         }
-     }
-
-     return $this->exists;
    }
 
    public function clear() {
@@ -117,6 +104,19 @@ class receta extends fs_model {
 
    public function install() {
       return '';
+   }
+   /**
+    * Verifica la exitencia de la receta
+    * @return boolean
+    */
+   public function exists() {
+     if (!$this->exists) {
+         if ($this->db->select("SELECT idreceta FROM " . $this->table_name . " WHERE idreceta = " . $this->var2str($this->idreceta) . ";")) {
+             $this->exists = TRUE;
+         }
+     }
+
+     return $this->exists;
    }
    /**
     * Devuelve una receta a partir de su referencia
