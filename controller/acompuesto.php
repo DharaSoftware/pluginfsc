@@ -31,7 +31,7 @@ class acompuesto extends fs_controller {
 
    public function __construct() {
 
-        parent::__construct(__CLASS__, 'Productos Compuestos', 'ventas');
+      parent::__construct(__CLASS__, 'Productos Compuestos', 'ventas');
    }
 
    public $resultados = array();

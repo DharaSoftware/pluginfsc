@@ -11,9 +11,9 @@
          </div>
          <div class="modal-body">
             <form id="f_buscar_articulos" name="f_buscar_articulos" action="{$fsc->url()}" method="post" class="form">
-               <input type="hidden" name="codcliente" value="{$fsc->cliente_s->codcliente}"/>
-               <input type="hidden" name="codalmacen"/>
-               <input type="hidden" name="coddivisa"/>
+              <!-- <input type="hidden" name="codcliente" value="{$fsc->cliente_s->codcliente}"/>
+                   <input type="hidden" name="coddivisa"/> -->
+                   <input type="hidden" name="codalmacen"/>
                <div class="container-fluid">
                   <div class="row">
                      <div class="col-sm-4">
@@ -36,7 +36,7 @@
                            <option value="">------</option>
                            {loop="$fsc->familia->all()"}
                            <option value="{$value->codfamilia}">{$value->nivel}{$value->descripcion}</option>
-                           {/loop}
+                           {/loop}<a href="#"></a>
                         </select>
                      </div>
                      <div class="col-sm-4">
@@ -52,6 +52,7 @@
                </div>
             </form>
          </div>
+         <!-- Boque para Mostrar las pestaña de resultado de busqueda con ajax-->
          <ul class="nav nav-tabs" id="nav_articulos" style="display: none;">
             <li id="li_mis_articulos">
                <a href="#" id="b_mis_articulos">Mi catálogo</a>
@@ -62,7 +63,9 @@
                </a>
             </li>
          </ul>
+         <!-- Bloque para ingresar nuevo articulo-->
          <div id="search_results"></div>
+         
          <div id="nuevo_articulo" class="modal-body" style="display: none;">
             <form name="f_nuevo_articulo" action="{$fsc->url()}" method="post" class="form">
                <div class="container-fluid">

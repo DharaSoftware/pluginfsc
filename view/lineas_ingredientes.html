@@ -1,21 +1,31 @@
+
+<!-- Bloque Original-->
 <div class="table-responsive">
-  <form id="ingredientes" name="f_ingredientes" action="{$fsc->url()}" method="post"/>
     <table class="table table-condensed" style="margin-bottom: 0px;">
         <thead>
             <tr>
                 <th class="text-left" width="80">Referencia</th>
                 <th class="text-left" width="200">Descripción</th>
-                <th class="text-right" width="110">Coste</th>
-                <th class="text-right" width="90">Necesarios</th>
-                <th class="text-right" width="90">Stock</th>
+                <th class="text-left" width="110">Coste</th>
+                <th class="text-left" width="90">Necesarios</th>
+                <th class="text-left" width="90">Stock</th>
             </tr>
         </thead>
         <tbody id="lineas_doc"></tbody>
-        <tfoot>
-          <tr class="info">
-            <div class="form-group">
+        <tr class="info">
                 <td>
                     <input id="i_new_line" class="form-control" type="text" placeholder="Buscar para añadir..." autocomplete="off"/>
+                </td>
+                <td>
+                    <a href="#" class="btn btn-sm btn-default" title="Añadir sin buscar" onclick="return add_linea_libre()">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    </a>
+                </td>
+                <td colspan="12"></td>
+            </tr>
+        <tr class="info">
+                <td>
+                    <input type="text" name="f_referencia" value="{$fsc->referencia}" class="form-control" readonly="readonly" />
                 </td>
                 <td>
                     <input type="text" name="f_descripcion" value="{$fsc->descripcion}" class="form-control" readonly="readonly"/>
@@ -24,14 +34,13 @@
                     <input type="text" name="f_coste" value="{$fsc->coste}" class="form-control" />
                 </td>
                 <td>
-                    <input type="text" name="f_coste" value="{$fsc->Necesarios}" class="form-control" />
+                    <input type="text" name="f_necesarios" value="{$fsc->necesarios}" class="form-control" />
                 </td>
                 <td>
-                    <input type="text" name="f_coste" value="{$fsc->Necesarios}" class="form-control"  />
+                    <input type="text" name="f_stock" value="{$fsc->necesarios}" class="form-control"  />
                 </td>
-            </div>
-          </tr>
-        </tfoot>
-    </table>
-  </form>
+           </tr>
+     </table>
 </div>
+
+

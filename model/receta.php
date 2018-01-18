@@ -88,7 +88,7 @@ class receta extends fs_model {
       $this->observaciones = '';
       $this->producto_res = '';
       $this->idarticulo = '';
-      $this->produccion = '';
+      $this->produccion = 0.0;
    }
 
    public function load_from_data($data) {
