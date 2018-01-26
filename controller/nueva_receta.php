@@ -41,47 +41,47 @@ class nueva_receta  extends fs_controller {
   public $fabricante;
   public $familia;
   public $impuesto;
-  public $receta = NULL;
+  public $receta;
+  public $msg_error;
+  public $multi_almacen;
 
   public function __construct() {
         parent::__construct(__CLASS__, 'Nueva Receta', 'ventas', FALSE, FALSE, TRUE);
    }
 
    protected function private_core() {
-          // configure delete action
-          $this->allow_delete = $this->user->allow_delete_on(__CLASS__);
-          /*Load data with estructure data*/
-          parent::private_core();
-
-    	if(!is_object($receta))
-    	{
-    		$receta = new \receta();
-    	}
-
+      // configure delete action
+      $this->allow_delete = $this->user->allow_delete_on(__CLASS__);
+      /*Load data with estructure data*/
+      parent::private_core();
     /* Bloque de entrada desde la page acompuesto*/
-        if (isset($_POST['referencia'])) {
-    		if ($receta->exists($_POST['referencia']))
-            {
+      if (isset($_POST['referencia'])) {
+    			  $this->familia = new \familia();
+    			  $this->fabricante = new \fabricante();
+    			  $this->impuesto = new \impuesto();
+    			  $almacen = new \almacen();
+    			  $this->almacenes = $almacen->all();
+            if(!is_object($this->receta)){
+              $data = array('idreceta'      => $_POST['referencia'],
+                            'descripcion'   => $_POST['descripcion'],
+                            'producto_res'  => $_POST['articulo_res'],
+                            'produccion'    =>  0.0,
+                            'idalmacening'  => '',
+                            'idalmacenres'  => '',
+                            'observaciones' => '',
+                            '$idarticulo'   => '');
+              $this->receta = new \receta($data);
+              $this->msg_error='FALSE';
+              }
+              
+            if ($this->receta->exists($_POST['referencia'])){
                 $this->new_error_msg("Identificador de Receta ya existe....");
-            }else {
-    			  		  /*Asignación de los valores de la receta*/
-
-        			  $this->familia = new \familia();
-        			  $this->fabricante = new \fabricante();
-        			  $this->impuesto = new \impuesto();
-        			  $almacen = new \almacen();
-        			  $this->almacenes = $almacen->all();
-        			  			  /*Asignación de los valores de la receta*/
-        			  $this->receta->idreceta = $_POST['referencia'];
-        			  $this->receta->descripcion = $_POST['descripcion'];
-        			  $this->receta->producto_res = $_POST['articulo_res'];
-        			  $this->receta->produccion = 0.0;
-        		  }
+                $this->msg_error='TRUE';
             }
-            if ($this->query != '') {
-                $this->new_search();
-            }
-
+        }
+      if ($this->query != '') {
+            $this->new_search();
+        }
     }
 
 /*

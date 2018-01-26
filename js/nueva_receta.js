@@ -11,7 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -33,44 +33,7 @@ var dtosl = false;
 var dtost = false;
 var solo_con_stock = true;
 
-function usar_cliente(codcliente)
-{
-    if (nueva_venta_url !== '') {
-        $.getJSON(nueva_venta_url, 'datoscliente=' + codcliente, function (json) {
-            cliente = json;
-            document.f_buscar_articulos.codcliente.value = cliente.codcliente;
-            if (cliente.regimeniva == 'Exento') {
-                irpf = 0;
-                for (var j = 0; j < numlineas; j++) {
-                    if ($("#linea_" + j).length > 0) {
-                        $("#iva_" + j).val(0);
-                        $("#recargo_" + j).val(0);
-                    }
-                }
-            }
-            recalcular();
-        });
-    }
-}
 
-function usar_serie()
-{
-    for (var i = 0; i < all_series.length; i++) {
-        if (all_series[i].codserie == $("#codserie").val()) {
-            siniva = all_series[i].siniva;
-            irpf = all_series[i].irpf;
-
-            for (var j = 0; j < numlineas; j++) {
-                if ($("#linea_" + j).length > 0 && siniva) {
-                    $("#iva_" + j).val(0);
-                    $("#recargo_" + j).val(0);
-                }
-            }
-
-            break;
-        }
-    }
-}
 
 function usar_almacen()
 {
@@ -80,41 +43,6 @@ function usar_almacen()
 function usar_divisa()
 {
     document.f_buscar_articulos.coddivisa.value = $("#coddivisa").val();
-}
-
-function usar_direccion()
-{
-    for (var i = 0; i < all_direcciones.length; i++) {
-        if (all_direcciones[i].id == $('select[name="coddir"]').val()) {
-            $('select[name="codpais"]').val(all_direcciones[i].codpais);
-            $('input[name="provincia"]').val(all_direcciones[i].provincia);
-            $('input[name="ciudad"]').val(all_direcciones[i].ciudad);
-            $('input[name="codpostal"]').val(all_direcciones[i].codpostal);
-            $('input[name="direccion"]').val(all_direcciones[i].direccion);
-            $('input[name="apartado"]').val(all_direcciones[i].apartado);
-        }
-    }
-}
-
-function usar_direccion_envio()
-{
-    for (var i = 0; i < all_direcciones.length; i++) {
-        if ($('select[name="envio_coddir"]').val() == '') {
-            $('input[name="envio_provincia"]').val('');
-            $('input[name="envio_ciudad"]').val('');
-            $('input[name="envio_codpostal"]').val('');
-            $('input[name="envio_direccion"]').val('');
-            $('input[name="envio_apartado"]').val('');
-            break;
-        } else if (all_direcciones[i].id == $('select[name="envio_coddir"]').val()) {
-            $('select[name="envio_codpais"]').val(all_direcciones[i].codpais);
-            $('input[name="envio_provincia"]').val(all_direcciones[i].provincia);
-            $('input[name="envio_ciudad"]').val(all_direcciones[i].ciudad);
-            $('input[name="envio_codpostal"]').val(all_direcciones[i].codpostal);
-            $('input[name="envio_direccion"]').val(all_direcciones[i].direccion);
-            $('input[name="envio_apartado"]').val(all_direcciones[i].apartado);
-        }
-    }
 }
 
 function recalcular()
@@ -492,117 +420,24 @@ function ajustar_total(i)
     recalcular();
 }
 
-function ajustar_iva(num)
+function add_articulo(ref, desc, coste, stock, necesarios)
 {
-    if ($("#linea_" + num).length > 0) {
-        if (cliente.regimeniva == 'Exento') {
-            $("#iva_" + num).val(0);
-            $("#recargo_" + num).val(0);
-
-            bootbox.alert({
-                message: 'El cliente tiene regimen de IVA: ' + cliente.regimeniva,
-                title: "<b>Atención</b>"
-            });
-        } else if (siniva && $("#iva_" + num).val() != 0) {
-            $("#iva_" + num).val(0);
-            $("#recargo_" + num).val(0);
-
-            bootbox.alert({
-                message: 'La serie selecciona es sin IVA.',
-                title: "<b>Atención</b>"
-            });
-        } else if (cliente.recargo) {
-            for (var i = 0; i < all_impuestos.length; i++) {
-                if ($("#iva_" + num).val() == all_impuestos[i].iva) {
-                    $("#recargo_" + num).val(all_impuestos[i].recargo);
-                }
-            }
-        }
-    }
-
-    recalcular();
-}
-
-function aux_all_dtos(dto2, dto3, dto4)
-{
-    var html = '<td class="dtosl"><input type="text" id="dto2_' + numlineas + '" name="dto2_' + numlineas +
-            '" value="' + dto2 + '" class="form-control text-right" onkeyup="recalcular()" onclick="this.select()" autocomplete="off"/></td>';
-    html += '<td class="dtosl"><input type="text" id="dto3_' + numlineas + '" name="dto3_' + numlineas +
-            '" value="' + dto3 + '" class="form-control text-right" onkeyup="recalcular()" onclick="this.select()" autocomplete="off"/></td>';
-    html += '<td class="dtosl"><input type="text" id="dto4_' + numlineas + '" name="dto4_' + numlineas +
-            '" value="' + dto4 + '" class="form-control text-right" onkeyup="recalcular()" onclick="this.select()" autocomplete="off"/></td>';
-    return html;
-}
-
-function aux_all_impuestos(num, codimpuesto)
-{
-    var iva = 0;
-    var recargo = 0;
-    if (cliente.regimeniva != 'Exento' && !siniva) {
-        for (var i = 0; i < all_impuestos.length; i++) {
-            if (all_impuestos[i].codimpuesto == codimpuesto || codimpuesto == '') {
-                iva = all_impuestos[i].iva;
-                if (cliente.recargo) {
-                    recargo = all_impuestos[i].recargo;
-                }
-                break;
-            }
-        }
-    }
-
-    var html = "<td><select id=\"iva_" + num + "\" class=\"form-control\" name=\"iva_" + num + "\" onchange=\"ajustar_iva('" + num + "')\">";
-    for (var i = 0; i < all_impuestos.length; i++) {
-        if (iva == all_impuestos[i].iva) {
-            html += "<option value=\"" + all_impuestos[i].iva + "\" selected=\"\">" + all_impuestos[i].descripcion + "</option>";
-        } else {
-            html += "<option value=\"" + all_impuestos[i].iva + "\">" + all_impuestos[i].descripcion + "</option>";
-        }
-    }
-    html += "</select></td>";
-
-    html += "<td class=\"recargo\"><input type=\"text\" class=\"form-control text-right\" id=\"recargo_" + num + "\" name=\"recargo_" + num +
-            "\" value=\"" + recargo + "\" onclick=\"this.select()\" onkeyup=\"recalcular()\" autocomplete=\"off\"/></td>";
-
-    html += "<td class=\"irpf\"><input type=\"text\" class=\"form-control text-right\" id=\"irpf_" + num + "\" name=\"irpf_" + num +
-            "\" value=\"" + irpf + "\" onclick=\"this.select()\" onkeyup=\"recalcular()\" autocomplete=\"off\"/></td>";
-
-    return html;
-}
-
-function add_articulo(ref, desc, pvp, dto, codimpuesto, cantidad, codcombinacion, dto2 = 0, dto3 = 0, dto4 = 0)
-{
-    if (typeof codcombinacion == 'undefined') {
-        codcombinacion = '';
-    }
-
-    desc = Base64.decode(desc);
+    // desc = Base64.decode(desc);
     $("#lineas_doc").append("<tr id=\"linea_" + numlineas + "\" data-ref=\"" + ref + "\">\n\
       <td><input type=\"hidden\" name=\"idlinea_" + numlineas + "\" value=\"-1\"/>\n\
          <input type=\"hidden\" name=\"referencia_" + numlineas + "\" value=\"" + ref + "\"/>\n\
-         <input type=\"hidden\" name=\"codcombinacion_" + numlineas + "\" value=\"" + codcombinacion + "\"/>\n\
          <div class=\"form-control\"><small><a target=\"_blank\" href=\"index.php?page=ventas_articulo&ref=" + ref + "\">" + ref + "</a></small></div></td>\n\
-      <td><textarea class=\"form-control\" id=\"desc_" + numlineas + "\" name=\"desc_" + numlineas + "\" rows=\"1\">" + desc + "</textarea></td>\n\
-      <td><input type=\"" + input_number + "\" step=\"any\" id=\"cantidad_" + numlineas + "\" class=\"form-control text-right\" name=\"cantidad_" + numlineas +
-            "\" onchange=\"recalcular()\" onkeyup=\"recalcular()\" autocomplete=\"off\" value=\"" + cantidad + "\"/></td>\n\
+        <td><textarea class=\"form-control\" id=\"desc_" + numlineas + "\" name=\"desc_" + numlineas + "\" rows=\"1\">" + desc + "</textarea></td>\n\
+      <td><input type=\"" + input_number + "\" step=\"any\" id=\"coste_" + numlineas + "\" class=\"form-control text-left\" name=\"coste_" + numlineas +
+            "\" autocomplete=\"off\" value=\"" + coste + "\"/></td>\n\
+	  <td><input type=\"" + input_number + "\" step=\"any\" id=\"stock_" + numlineas + "\" class=\"form-control text-left\" name=\"stock_" + numlineas +
+            "\" autocomplete=\"off\" value=\"" + stock + "\"/></td>\n\
+      <td><input type=\"" + input_number + "\" step=\"any\" id=\"neces_" + numlineas + "\" class=\"form-control text-left\" name=\"neces_" + numlineas +
+            "\" autocomplete=\"off\" value=\"" + necesarios + "\"/></td>\n\
       <td><button class=\"btn btn-sm btn-danger\" type=\"button\" onclick=\"$('#linea_" + numlineas + "').remove();recalcular();\">\n\
-         <span class=\"glyphicon glyphicon-trash\"></span></button></td>\n\
-      <td><input type=\"text\" class=\"form-control text-right\" id=\"pvp_" + numlineas + "\" name=\"pvp_" + numlineas + "\" value=\"" + pvp +
-            "\" onkeyup=\"recalcular()\" onclick=\"this.select()\" autocomplete=\"off\"/></td>\n\
-      <td><input type=\"text\" id=\"dto_" + numlineas + "\" name=\"dto_" + numlineas + "\" value=\"" + dto +
-            "\" class=\"form-control text-right\" onkeyup=\"recalcular()\" onchange=\"recalcular()\" onclick=\"this.select()\" autocomplete=\"off\"/></td>\n\
-    " + aux_all_dtos(dto2, dto3, dto4) + "\n\
-      <td><input type=\"text\" class=\"form-control text-right\" id=\"neto_" + numlineas + "\" name=\"neto_" + numlineas +
-            "\" onchange=\"ajustar_neto(" + numlineas + ")\" onclick=\"this.select()\" autocomplete=\"off\"/></td>\n\
-      " + aux_all_impuestos(numlineas, codimpuesto) + "\n\
-      <td class=\"warning\" title=\"Cálculo aproximado del total de la linea\">\n\
-         <input type=\"text\" class=\"form-control text-right\" id=\"total_" + numlineas + "\" name=\"total_" + numlineas +
-            "\" onchange=\"ajustar_total(" + numlineas + ")\" onclick=\"this.select()\" autocomplete=\"off\"/></td></tr>");
+         <span class=\"glyphicon glyphicon-trash\"></span></button></td>\n\</tr>");
     numlineas += 1;
-    $("#numlineas").val(numlineas);
-    recalcular();
-
     $("#modal_articulos").modal('hide');
-
     $("#desc_" + (numlineas - 1)).select();
     return false;
 }
@@ -635,24 +470,17 @@ function add_linea_libre()
     $("#lineas_doc").append("<tr id=\"linea_" + numlineas + "\" data-ref=\"\" >\n\
       <td><input type=\"hidden\" name=\"idlinea_" + numlineas + "\" value=\"-1\"/>\n\
          <input type=\"hidden\" name=\"referencia_" + numlineas + "\"/>\n\
-         <input type=\"hidden\" name=\"codcombinacion_" + numlineas + "\"/>\n\
          <div class=\"form-control\"></div></td>\n\
-      <td><textarea class=\"form-control\" id=\"desc_" + numlineas + "\" name=\"desc_" + numlineas + "\" rows=\"1\"></textarea></td>\n\
-      <td><input type=\"" + input_number + "\" step=\"any\" id=\"cantidad_" + numlineas + "\" class=\"form-control text-right\" name=\"cantidad_" + numlineas +
-            "\" onchange=\"recalcular()\" onkeyup=\"recalcular()\" autocomplete=\"off\" value=\"1\"/></td>\n\
+      <td><textarea class=\"form-control\" id=\"desc_" + numlineas + "\" name=\"desc_" + numlineas + "\" rows=\"1\"> </textarea></td>\n\
+      <td><input type=\"" + input_number + "\" step=\"any\" id=\"coste_" + numlineas + "\" class=\"form-control text-left\" name=\"coste_" + numlineas +
+            "\" autocomplete=\"off\" value=\"\"/></td>\n\
+    <td><input type=\"" + input_number + "\" step=\"any\" id=\"stock_" + numlineas + "\" class=\"form-control text-left\" name=\"stock_" + numlineas +
+            "\" autocomplete=\"off\" value=\"\"/></td>\n\
+      <td><input type=\"" + input_number + "\" step=\"any\" id=\"neces_" + numlineas + "\" class=\"form-control text-left\" name=\"neces_" + numlineas +
+            "\" autocomplete=\"off\" value=\"\"/></td>\n\
       <td><button class=\"btn btn-sm btn-danger\" type=\"button\" onclick=\"$('#linea_" + numlineas + "').remove();recalcular();\">\n\
-         <span class=\"glyphicon glyphicon-trash\"></span></button></td>\n\
-      <td><input type=\"text\" class=\"form-control text-right\" id=\"pvp_" + numlineas + "\" name=\"pvp_" + numlineas + "\" value=\"0\"\n\
-          onkeyup=\"recalcular()\" onclick=\"this.select()\" autocomplete=\"off\"/></td>\n\
-      <td><input type=\"text\" id=\"dto_" + numlineas + "\" name=\"dto_" + numlineas + "\" value=\"0\" class=\"form-control text-right\"\n\
-          onkeyup=\"recalcular()\" onclick=\"this.select()\" autocomplete=\"off\"/></td>\n\
-      " + aux_all_dtos() + "\n\
-      <td><input type=\"text\" class=\"form-control text-right\" id=\"neto_" + numlineas + "\" name=\"neto_" + numlineas +
-            "\" onchange=\"ajustar_neto(" + numlineas + ")\" onclick=\"this.select()\" autocomplete=\"off\"/></td>\n\
-      " + aux_all_impuestos(numlineas, default_impuesto) + "\n\
-      <td class=\"warning\" title=\"Cálculo aproximado del total de la linea\">\n\
-         <input type=\"text\" class=\"form-control text-right\" id=\"total_" + numlineas + "\" name=\"total_" + numlineas +
-            "\" onchange=\"ajustar_total(" + numlineas + ")\" onclick=\"this.select()\" autocomplete=\"off\"/></td></tr>");
+         <span class=\"glyphicon glyphicon-trash\"></span></button></td>\n\</tr>");
+
     numlineas += 1;
     $("#numlineas").val(numlineas);
     recalcular();
@@ -738,6 +566,8 @@ function buscar_articulos()
             $.getJSON(nueva_venta_url, $("form[name=f_buscar_articulos]").serialize(), function (json) {
                 var items = [];
                 var insertar = false;
+                var necesarios =0;
+
                 $.each(json, function (key, val) {
                     var stock = val.stockalm;
                     if (val.nostock) {
@@ -748,18 +578,6 @@ function buscar_articulos()
 
                     var descripcion = Base64.encode(val.descripcion);
                     var descripcion_visible = val.descripcion;
-                    if (val.codfamilia) {
-                        descripcion_visible += ' <span class="label label-default" title="Familia: ' + val.codfamilia + '">'
-                                + val.codfamilia + '</span>';
-                    }
-                    if (val.codfabricante) {
-                        descripcion_visible += ' <span class="label label-default" title="Fabricante: ' + val.codfabricante + '">'
-                                + val.codfabricante + '</span>';
-                    }
-                    if (val.trazabilidad) {
-                        descripcion_visible += ' &nbsp; <i class="fa fa-code-fork" aria-hidden="true" title="Trazabilidad activada"></i>';
-                    }
-
                     var tr_aux = '<tr>';
                     if (val.bloqueado || (val.stockalm < 1 && !val.controlstock)) {
                         tr_aux = "<tr class=\"danger\">";
@@ -770,12 +588,12 @@ function buscar_articulos()
                     }
 
                     if (val.sevende) {
-                        var funcion = "add_articulo('" + val.referencia + "','" + descripcion + "','" + val.pvp + "','"
-                                + val.dtopor + "','" + val.codimpuesto + "','" + val.cantidad + "')";
+                        var funcion = "add_articulo('" + val.referencia + "','" + descripcion_visible + "','" + val.preciocoste + "','"
+                                + stock + "','" + necesarios + "')";
 
                         if (val.tipo) {
-                            funcion = "add_articulo_" + val.tipo + "('" + val.referencia + "','" + descripcion + "','"
-                                    + val.pvp + "','" + val.dtopor + "','" + val.codimpuesto + "','" + val.cantidad + "')";
+                            funcion = "add_articulo_" + val.tipo + "('" + val.referencia + "','" + descripcion_visible + "','"
+                                    + val.preciocoste + "','" + stock + "','" + necesarios + "')";
                         }
 
                         items.push(tr_aux + "<td><a href=\"#\" onclick=\"get_precios('" + val.referencia + "')\" title=\"más detalles\">\n\
@@ -794,7 +612,7 @@ function buscar_articulos()
                     }
                 });
 
-                if (items.length == 0 && !fin_busqueda-1) {
+                if (items.length == 0 && !fin_busqueda1) {
                     items.push("<tr><td colspan=\"4\" class=\"warning\">Sin resultados. Usa la pestaña\n\
                               <b>Nuevo</b> para crear uno.</td></tr>");
                     document.f_nuevo_articulo.referencia.value = document.f_buscar_articulos.query.value;
@@ -832,7 +650,7 @@ function show_pvp_iva(pvp, codimpuesto, coddivisa)
 /**
  * Devuelve el escalar del descuento unificado equivalente
  * Por ejemplo: recibe descuentos = [50, 10] y devuelve 0.45
- * 
+ *
  * @param Array descuentos
  * @return float
  */
@@ -844,7 +662,7 @@ function calc_due(descuentos)
 /**
  * Devuelve el descuento unificado equivalente
  * Por ejemplo: recibe descuentos = [50, 10] y devuelve 55
- * 
+ *
  * @param Array descuentos
  * @return float
  */

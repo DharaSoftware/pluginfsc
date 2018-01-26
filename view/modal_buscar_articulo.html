@@ -11,9 +11,7 @@
          </div>
          <div class="modal-body">
             <form id="f_buscar_articulos" name="f_buscar_articulos" action="{$fsc->url()}" method="post" class="form">
-              <!-- <input type="hidden" name="codcliente" value="{$fsc->cliente_s->codcliente}"/>
-                   <input type="hidden" name="coddivisa"/> -->
-                   <input type="hidden" name="codalmacen"/>
+               <input type="hidden" name="codalmacen"/>
                <div class="container-fluid">
                   <div class="row">
                      <div class="col-sm-4">
@@ -65,7 +63,7 @@
          </ul>
          <!-- Bloque para ingresar nuevo articulo-->
          <div id="search_results"></div>
-         
+
          <div id="nuevo_articulo" class="modal-body" style="display: none;">
             <form name="f_nuevo_articulo" action="{$fsc->url()}" method="post" class="form">
                <div class="container-fluid">

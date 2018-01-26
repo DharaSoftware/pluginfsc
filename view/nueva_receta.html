@@ -1,6 +1,7 @@
 {include="header"}
 
-<script type="text/javascript" src="{$fsc->get_js_location('nueva_venta.js')}"></script>
+<!--<script type="text/javascript" src="{$fsc->get_js_location('nueva_venta.js')}"></script>-->
+<script type="text/javascript" src="plugins/acompuesto/js/nueva_receta.js"></script>
 <script type="text/javascript"> nueva_venta_url = '{$fsc->url()}'; </script>
 
 
@@ -23,8 +24,8 @@
    </div>
 </div>
 
+{if="$fsc->msg_error=='FALSE'"}
 <!--bloque forma de datos de la nueva receta -->
-
 <div class="container-fluid" style="margin-bottom: 10px;">
        <!--Encabezado de productos compuestos-->
        <div class="row" >
@@ -114,7 +115,9 @@
           </div>
       </div>
   </div>
-
 </form>
+
 {include="modal_buscar_articulo"}
+{/if}
+
 {include="footer"}
