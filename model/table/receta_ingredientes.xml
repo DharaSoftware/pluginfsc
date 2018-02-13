@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Document   : receta_ingredientes.xml
+   Description:
+        Estructura de la tabla receta_ingredientes.
+-->
+<tabla>
+  <columna>
+    <nombre>id</nombre>
+    <tipo>serial</tipo>
+    <nulo>NO</nulo>
+    <defecto>nextval('receta_ingredientes_id_seq'::regclass)</defecto>
+  </columna>
+  <columna>
+    <nombre>idrecetar</nombre>
+    <tipo>varchar(6)</tipo>
+    <nulo>NO</nulo>
+  </columna>
+  <columna>
+    <nombre>idarticulor</nombre>
+    <tipo>varchar(18)</tipo>
+    <nulo>NO</nulo>
+  </columna>
+  <columna>
+    <nombre>necesarios</nombre>
+    <tipo>integer</tipo>
+    <nulo>NO</nulo>
+  </columna>
+  <columna>
+    <nombre>idlinea</nombre>
+    <tipo>integer</tipo>
+    <nulo>NO</nulo>
+  </columna>
+  <restriccion>
+    <nombre>receta_ingredientes_pkey</nombre>
+    <consulta>PRIMARY KEY (id)</consulta>
+  </restriccion>
+</tabla>

@@ -34,17 +34,6 @@ var dtost = false;
 var solo_con_stock = true;
 
 
-
-function usar_almacen()
-{
-    document.f_buscar_articulos.codalmacen.value = $("#codalmacen").val();
-}
-
-function usar_divisa()
-{
-    document.f_buscar_articulos.coddivisa.value = $("#coddivisa").val();
-}
-
 function recalcular()
 {
     var show_dtosl = false;
@@ -263,169 +252,12 @@ function disable_inputs(name, value)
     }
 }
 
-function ajustar_neto(i)
-{
-    var l_uds = 0;
-    var l_pvp = 0;
-    var l_dto = 0;
-    var l_dto2 = 0;
-    var l_dto3 = 0;
-    var l_dto4 = 0;
-    var l_neto = 0;
-
-    if ($("#linea_" + i).length > 0) {
-        /// cambiamos coma por punto
-        if ($("#neto_" + i).val().search(",") >= 0) {
-            $("#neto_" + i).val($("#neto_" + i).val().replace(",", "."));
-        }
-
-        l_uds = parseFloat($("#cantidad_" + i).val());
-        if (isNaN(l_uds)) {
-            l_uds = 0;
-        }
-        l_pvp = parseFloat($("#pvp_" + i).val());
-        if (isNaN(l_pvp)) {
-            l_pvp = 0;
-        }
-        l_dto = parseFloat($("#dto_" + i).val());
-        l_dto2 = parseFloat($("#dto2_" + i).val());
-        l_dto3 = parseFloat($("#dto3_" + i).val());
-        l_dto4 = parseFloat($("#dto4_" + i).val());
-        l_neto = parseFloat($("#neto_" + i).val());
-        if (isNaN(l_neto)) {
-            l_neto = 0;
-        } else if (l_neto < 0) {
-            l_neto = Math.abs(l_neto);
-        }
-
-        if (l_neto <= l_pvp * l_uds) {
-            l_dto = 100 - 100 * l_neto / (l_pvp * l_uds);
-            if (isNaN(l_dto)) {
-                l_dto = 0;
-            }
-
-            l_dto2 = l_dto2;
-            if (isNaN(l_dto2)) {
-                l_dto2 = 0;
-            }
-
-            l_dto3 = l_dto3;
-            if (isNaN(l_dto3)) {
-                l_dto3 = 0;
-            }
-
-            l_dto4 = l_dto4;
-            if (isNaN(l_dto4)) {
-                l_dto4 = 0;
-            }
-        } else {
-            l_dto = 0;
-            l_pvp = 100 * l_neto / (l_uds * (100 - l_dto));
-            if (isNaN(l_pvp)) {
-                l_pvp = 0;
-            }
-
-            l_pvp = fs_round(l_pvp, fs_nf0_art);
-        }
-
-        $("#pvp_" + i).val(l_pvp);
-        $("#dto_" + i).val(l_dto);
-        $("#dto2_" + i).val(l_dto2);
-        $("#dto3_" + i).val(l_dto3);
-        $("#dto4_" + i).val(l_dto4);
-    }
-
-    recalcular();
-}
-
-function ajustar_total(i)
-{
-    var l_uds = 0;
-    var l_pvp = 0;
-    var l_dto = 0;
-    var l_iva = 0;
-    var l_irpf = 0;
-    var l_recargo = 0;
-    var l_neto = 0;
-    var l_total = 0;
-
-    if ($("#linea_" + i).length > 0) {
-        /// cambiamos coma por punto
-        if ($("#total_" + i).val().search(",") >= 0) {
-            $("#total_" + i).val($("#total_" + i).val().replace(",", "."));
-        }
-
-        l_uds = parseFloat($("#cantidad_" + i).val());
-        if (isNaN(l_uds)) {
-            l_uds = 0;
-        } else if (l_uds < 0) {
-            l_uds = Math.abs(l_uds);
-        }
-        l_pvp = parseFloat($("#pvp_" + i).val());
-        if (isNaN(l_pvp)) {
-            l_pvp = 0;
-        } else if (l_pvp < 0) {
-            l_pvp = Math.abs(l_pvp);
-        }
-        l_dto = parseFloat($("#dto_" + i).val());
-        if (isNaN(l_dto)) {
-            l_dto = 0;
-        } else if (l_dto < 0) {
-            l_dto = Math.abs(l_dto);
-        }
-        l_iva = parseFloat($("#iva_" + i).val());
-        if (isNaN(l_iva)) {
-            l_iva = 0;
-        } else if (l_iva < 0) {
-            l_iva = Math.abs(l_iva);
-        }
-        l_recargo = parseFloat($("#recargo_" + i).val());
-        if (isNaN(l_recargo)) {
-            l_recargo = 0;
-        } else if (l_recargo < 0) {
-            l_recargo = Math.abs(l_recargo);
-        }
-        l_irpf = parseFloat($("#irpf_" + i).val());
-        if (isNaN(l_irpf)) {
-            l_irpf = 0;
-        } else if (l_irpf < 0) {
-            l_irpf = Math.abs(l_irpf);
-        }
-
-        l_total = parseFloat($("#total_" + i).val());
-        if (isNaN(l_total)) {
-            l_total = 0;
-        } else if (l_total < 0) {
-            l_total = Math.abs(l_total);
-        }
-
-        if (l_total <= l_pvp * l_uds + (l_pvp * l_uds * (l_iva - l_irpf + l_recargo) / 100)) {
-            l_neto = 100 * l_total / (100 + l_iva - l_irpf + l_recargo);
-            l_dto = 100 - 100 * l_neto / (l_pvp * l_uds);
-            if (isNaN(l_dto)) {
-                l_dto = 0;
-            }
-
-            l_dto = fs_round(l_dto, 2);
-        } else {
-            l_dto = 0;
-            l_neto = 100 * l_total / (100 + l_iva - l_irpf + l_recargo);
-            l_pvp = fs_round(l_neto / l_uds, fs_nf0_art);
-        }
-
-        $("#pvp_" + i).val(l_pvp);
-        $("#dto_" + i).val(l_dto);
-    }
-
-    recalcular();
-}
-
 function add_articulo(ref, desc, coste, stock, necesarios)
 {
-    // desc = Base64.decode(desc);
+    var nliena;
     $("#lineas_doc").append("<tr id=\"linea_" + numlineas + "\" data-ref=\"" + ref + "\">\n\
       <td><input type=\"hidden\" name=\"idlinea_" + numlineas + "\" value=\"-1\"/>\n\
-         <input type=\"hidden\" name=\"referencia_" + numlineas + "\" value=\"" + ref + "\"/>\n\
+          <input type=\"hidden\" name=\"referencia_" + numlineas + "\" value=\"" + ref + "\"/>\n\
          <div class=\"form-control\"><small><a target=\"_blank\" href=\"index.php?page=ventas_articulo&ref=" + ref + "\">" + ref + "</a></small></div></td>\n\
         <td><textarea class=\"form-control\" id=\"desc_" + numlineas + "\" name=\"desc_" + numlineas + "\" rows=\"1\">" + desc + "</textarea></td>\n\
       <td><input type=\"" + input_number + "\" step=\"any\" id=\"coste_" + numlineas + "\" class=\"form-control text-left\" name=\"coste_" + numlineas +
@@ -439,6 +271,7 @@ function add_articulo(ref, desc, coste, stock, necesarios)
     numlineas += 1;
     $("#modal_articulos").modal('hide');
     $("#desc_" + (numlineas - 1)).select();
+    document.f_new_receta.nlinea.value = numlineas;
     return false;
 }
 
@@ -487,64 +320,6 @@ function add_linea_libre()
 
     $("#desc_" + (numlineas - 1)).select();
     return false;
-}
-
-function get_precios(ref)
-{
-    if (nueva_venta_url !== '') {
-        $.ajax({
-            type: 'POST',
-            url: nueva_venta_url,
-            dataType: 'html',
-            data: "referencia4precios=" + ref + "&codcliente=" + cliente.codcliente,
-            success: function (datos) {
-                $("#nav_articulos").hide();
-                $("#search_results").html(datos);
-            },
-            error: function () {
-                bootbox.alert({
-                    message: 'Se ha producido un error al obtener los precios.',
-                    title: "<b>Atención</b>"
-                });
-            }
-        });
-    }
-}
-
-function new_articulo()
-{
-    if (nueva_venta_url !== '') {
-        $.ajax({
-            type: 'POST',
-            url: nueva_venta_url + '&new_articulo=TRUE',
-            dataType: 'json',
-            data: $("form[name=f_nuevo_articulo]").serialize(),
-            success: function (datos) {
-                if (typeof datos[0] == 'undefined') {
-                    bootbox.alert({
-                        message: 'Se ha producido un error al crear el artículo.',
-                        title: "<b>Atención</b>"
-                    });
-                } else {
-                    document.f_buscar_articulos.query.value = document.f_nuevo_articulo.referencia.value;
-                    $("#nav_articulos li").each(function () {
-                        $(this).removeClass("active");
-                    });
-                    $("#li_mis_articulos").addClass('active');
-                    $("#search_results").show();
-                    $("#nuevo_articulo").hide();
-
-                    add_articulo(datos[0].referencia, Base64.encode(datos[0].descripcion), datos[0].pvp, 0, datos[0].codimpuesto, 1);
-                }
-            },
-            error: function () {
-                bootbox.alert({
-                    message: 'Se ha producido un error al crear el artículo.',
-                    title: "<b>Atención</b>"
-                });
-            }
-        });
-    }
 }
 
 function buscar_articulos()
@@ -609,13 +384,13 @@ function buscar_articulos()
                     if (val.query == document.f_buscar_articulos.query.value) {
                         insertar = true;
                         fin_busqueda1 = true;
+                        nlinea = nlinea + 1;
                     }
                 });
 
                 if (items.length == 0 && !fin_busqueda1) {
                     items.push("<tr><td colspan=\"4\" class=\"warning\">Sin resultados. Usa la pestaña\n\
                               <b>Nuevo</b> para crear uno.</td></tr>");
-                    document.f_nuevo_articulo.referencia.value = document.f_buscar_articulos.query.value;
                     insertar = true;
                 }
 
@@ -631,7 +406,63 @@ function buscar_articulos()
         }
     }
 }
+function get_precios(ref)
+{
+    if (nueva_venta_url !== '') {
+        $.ajax({
+            type: 'POST',
+            url: nueva_venta_url,
+            dataType: 'html',
+            data: "referencia4precios=" + ref + "&codcliente=" + cliente.codcliente,
+            success: function (datos) {
+                $("#nav_articulos").hide();
+                $("#search_results").html(datos);
+            },
+            error: function () {
+                bootbox.alert({
+                    message: 'Se ha producido un error al obtener los precios.',
+                    title: "<b>Atención</b>"
+                });
+            }
+        });
+    }
+}
 
+function new_articulo()
+{
+    if (nueva_venta_url !== '') {
+        $.ajax({
+            type: 'POST',
+            url: nueva_venta_url + '&new_articulo=TRUE',
+            dataType: 'json',
+            data: $("form[name=f_nuevo_articulo]").serialize(),
+            success: function (datos) {
+                if (typeof datos[0] == 'undefined') {
+                    bootbox.alert({
+                        message: 'Se ha producido un error al crear el artículo.',
+                        title: "<b>Atención</b>"
+                    });
+                } else {
+                    document.f_buscar_articulos.query.value = document.f_nuevo_articulo.referencia.value;
+                    $("#nav_articulos li").each(function () {
+                        $(this).removeClass("active");
+                    });
+                    $("#li_mis_articulos").addClass('active');
+                    $("#search_results").show();
+                    $("#nuevo_articulo").hide();
+
+                    add_articulo(datos[0].referencia, Base64.encode(datos[0].descripcion), datos[0].pvp, 0, datos[0].codimpuesto, 1);
+                }
+            },
+            error: function () {
+                bootbox.alert({
+                    message: 'Se ha producido un error al crear el artículo.',
+                    title: "<b>Atención</b>"
+                });
+            }
+        });
+    }
+}
 function show_pvp_iva(pvp, codimpuesto, coddivisa)
 {
     var iva = 0;
@@ -752,4 +583,18 @@ $(document).ready(function () {
         $("#nuevo_articulo").show();
         document.f_nuevo_articulo.referencia.select();
     });
+
+    if(window.location.hash.substring(1) == 'Producir') {
+         show_producir();
+      }
+    $("#b_produccion").click(function(event) {
+         event.preventDefault();
+         show_producir();
+      });
 });
+
+function show_producir()
+{
+   $("#modal_producir").modal('show');
+   document.fp_producir.fp_cantidad.focus();
+}

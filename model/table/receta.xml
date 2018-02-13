@@ -36,6 +36,11 @@
     <nulo>YES</nulo>
   </columna>
   <columna>
+    <nombre>idarticulo</nombre>
+    <tipo>varchar(18)</tipo>
+    <nulo>YES</nulo>
+  </columna>
+  <columna>
     <nombre>produccion</nombre>
     <tipo>integer</tipo>
     <nulo>YES</nulo>

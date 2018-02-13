@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Document   : receta_produccion.xml
+   Description:
+        Estructura de la tabla receta_produccion.
+-->
+<tabla>
+  <columna>
+    <nombre>id</nombre>
+    <tipo>serial</tipo>
+    <nulo>NO</nulo>
+    <defecto>nextval('receta_produccion_id_seq'::regclass)</defecto>
+  </columna>
+  <columna>
+    <nombre>idrecetar</nombre>
+    <tipo>varchar(6)</tipo>
+    <nulo>NO</nulo>
+  </columna>
+  <columna>
+    <nombre>producidos</nombre>
+    <tipo>integer</tipo>
+    <nulo>NO</nulo>
+  </columna>
+  <columna>
+    <nombre>fecha</nombre>
+    <tipo>timestamp</tipo>
+    <nulo>NO</nulo>
+  </columna>
+  <restriccion>
+    <nombre>receta_produccion_pkey</nombre>
+    <consulta>PRIMARY KEY (id)</consulta>
+  </restriccion>
+</tabla>

@@ -1,123 +1,117 @@
 {include="header"}
-
-<!--<script type="text/javascript" src="{$fsc->get_js_location('nueva_venta.js')}"></script>-->
 <script type="text/javascript" src="plugins/acompuesto/js/nueva_receta.js"></script>
-<script type="text/javascript"> nueva_venta_url = '{$fsc->url()}'; </script>
+<script type="text/javascript">
+  nueva_venta_url = '{$fsc->url()}';
+</script>
 
 
 <!--Bontones del top de recargar, y nueva receta-->
 <div class="container-fluid" style="margin-bottom: 10px;">
-   <div class="row">
-      <div class="col-xs-12">
-         <div class="btn-group hidden-xs">
-            <a class="btn btn-sm btn-default" href="index.php?page=acompuesto" title="Regresar a Recetas">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="btn-group hidden-xs">
+        <a class="btn btn-sm btn-default" href="index.php?page=acompuesto" title="Regresar a Recetas">
                <span class="glyphicon glyphicon-arrow-left"></span> Atras
             </a>
-        </div>
-        <div class="btn-group">
-            <a id="produccion" class="btn btn-sm btn-info" href="#">
+      </div>
+      <div class="btn-group">
+        <a id="b_produccion" class="btn btn-sm btn-info" href="#">
                <span class="glyphicon glyphicon-shopping-cart"></span>
                <span class="hidden-xs">&nbsp;Producir&nbsp; <span class="badge">{$fsc->receta->produccion}</span></span>
             </a>
-        </div>
       </div>
-   </div>
+    </div>
+  </div>
 </div>
-
 {if="$fsc->msg_error=='FALSE'"}
 <!--bloque forma de datos de la nueva receta -->
 <div class="container-fluid" style="margin-bottom: 10px;">
-       <!--Encabezado de productos compuestos-->
-       <div class="row" >
-         <div class="col-xs-12">
-           <h2><span class="glyphicon glyphicon-list-alt"></span>&nbsp;{$fsc->receta->idreceta}: &nbsp;{$fsc->receta->descripcion}</h2>
-         </div>
-       </div>
-      <!--Forma de entrada de Datos de la receta-->
-   <form id="nreceta" name="f_new_receta" action="{$fsc->url()}" method="post">
-        <input id="nr_referencia" name="nr_idreceta"  value="{$fsc->receta->idreceta}" type="hidden"/>
-        <div class="row" style="margin-top: 15px;">
-          <div class="form-group">
-                <div class="col-xs-4"><b>Descripción</b>
-                    <input type="text" name="nr_descripcion" class="form-control" value="{$fsc->receta->descripcion}" autocomplete="off" required=""/>
-                </div>
-                <div class="col-xs-4"><b>Articulo Resultante</b>
-                    <input type="text" name="nr_articulo_res" class="form-control" value="{$fsc->receta->producto_res}" autocomplete="off" readonly="readonly" required=""/>
-                </div>
-                <div class="col-xs-2"><b>Cantidad</b>
-                    <input type="text" name="nr_cantidad" class="form-control" placeholder="Cantidad" autocomplete="off" required=""/>
-                </div>
-          </div>
+  <!--Encabezado de productos compuestos-->
+  <div class="row">
+    <div class="col-xs-12">
+      <h2><span class="glyphicon glyphicon-list-alt"></span>&nbsp;{$fsc->receta->idreceta}: &nbsp;{$fsc->receta->descripcion}</h2>
+    </div>
+  </div>
+  <!--Forma de entrada de Datos de la receta-->
+  <form id="nreceta" name="f_new_receta" action="{$fsc->url()}&n_receta=nc_insert" method="post">
+    <input id="nr_referencia" name="nr_idreceta" value="{$fsc->receta->idreceta}" type="hidden" />
+    <input id="nlinea" name="nlinea"  value="" type="hidden" />
+    <div class="row" style="margin-top: 15px;">
+      <div class="form-group">
+        <div class="col-xs-4"><b>Descripción</b>
+          <input type="text" name="nr_descripcion" class="form-control" value="{$fsc->receta->descripcion}" autocomplete="off" required="" />
         </div>
-
-      <div class="row" style="margin-top: 15px;">
-        <!-- Bloque de Almacenes Alamcen de ingredientes -->
-        <div class="form-group">
-          <div class="col-xs-3"><b>Almacén de Ingredientes:</b>
-                <select name="nr_almacening" class="form-control" id="nr_idalmacening">
-                    <option value="">------</option>
-                     {loop="$fsc->almacenes"}
-                      <option value="{$value->codalmacen}">{$value->nombre}</option>
-                    {/loop}
-                </select>
-          </div>
-          <!-- Bloque de Almacenes Alamcen Producto resultante -->
-          <div class="col-xs-3"><b>Almacén de Productos resultantes:</b>
-                <select name="nr_almacenres" class="form-control" id="nr_idalmaceres" >
-                    <option value="">------</option>
-                     {loop="$fsc->almacenes"}
-                      <option value="{$value->codalmacen}">{$value->nombre}</option>
-                    {/loop}
-                </select>
-          </div>
-          <div class="col-xs-4"><b>Observaciones</b>
-            <textarea name="nr_observaciones" class="form-control" placeholder="Observaciones" rows="3" ></textarea>
-          </div>
+        <div class="col-xs-4"><b>Articulo Resultante</b>
+          <input type="text" name="nr_articulo_res" class="form-control" value="{$fsc->receta->producto_res}" autocomplete="off" readonly="readonly" required="" />
+        </div>
+        <div class="col-xs-2"><b>Cantidad</b>
+          <input type="text" name="nr_cantidad" class="form-control" placeholder="Cantidad" autocomplete="off" required="" />
+        </div>
       </div>
     </div>
 
-</div>
-  <!-- Bloque de las lineas de ingredientes -->
+    <div class="row" style="margin-top: 15px;">
+      <!-- Bloque de Almacenes Alamcen de ingredientes -->
+      <div class="form-group">
+        <div class="col-xs-3"><b>Almacén de Ingredientes:</b>
+          <select name="nr_almacening" class="form-control" id="nr_idalmacening">
+                    <option value="">------</option>
+                     {loop="$fsc->almacenes"}
+                      <option value="{$value->codalmacen}">{$value->nombre}</option>
+                    {/loop}
+                </select>
+        </div>
+        <!-- Bloque de Almacenes Alamcen Producto resultante -->
+        <div class="col-xs-3"><b>Almacén de Productos resultantes:</b>
+          <select name="nr_almacenres" class="form-control" id="nr_idalmaceres">
+                    <option value="">------</option>
+                     {loop="$fsc->almacenes"}
+                      <option value="{$value->codalmacen}">{$value->nombre}</option>
+                    {/loop}
+                </select>
+        </div>
+        <div class="col-xs-4"><b>Observaciones</b>
+          <textarea name="nr_observaciones" class="form-control" placeholder="Observaciones" rows="3"></textarea>
+        </div>
+      </div>
+    </div>
+<!-- Bloque de las lineas de ingredientes -->
 <div role="tabpanel">
-    <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active">
-            <a href="#lineas" aria-controls="lineas" role="tab" data-toggle="tab">
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active">
+      <a href="#lineas" aria-controls="lineas" role="tab" data-toggle="tab">
                 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
                 <span class="hidden-xs">&nbsp;Líneas</span>
             </a>
-        </li>
-        <li role="presentation">
-            <a href="#detalles" aria-controls="detalles" role="tab" data-toggle="tab">
+    </li>
+    <li role="presentation">
+      <a href="#detalles" aria-controls="detalles" role="tab" data-toggle="tab">
                 <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
                 <span class="hidden-xs">&nbsp;Detalles</span>
             </a>
-        </li>
-    </ul>
-    <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" id="lineas">
-            {include="lineas_ingredientes"}
-        </div>
-        <div role="tabpanel" class="tab-pane" id="detalles"></div>
+    </li>
+  </ul>
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="lineas">
+      {include="lineas_ingredientes"}
     </div>
+    <div role="tabpanel" class="tab-pane" id="detalles"></div>
+  </div>
 </div>
 <!--Boton de guardado-->
-  <div class="container-fluid" style="margin-top: 10px;">
-      <div class="row">
-          <div class="col-sm-6">
-              <button class="btn btn-sm btn-default" type="button" onclick="window.location.href = '{$fsc->url()}';">
-                  <span class="glyphicon glyphicon-refresh"></span>&nbsp; Reiniciar
-              </button>
-          </div>
-          <div class="col-sm-6 text-right">
-              <button class="btn btn-sm btn-primary" type="button" onclick="$('#modal_guardar').modal('show');">
+<div class="container-fluid" style="margin-top: 10px;">
+  <div class="row">
+    <div class="col-sm-6"> </div>
+    <div class="col-sm-6 text-right">
+      <button class="btn btn-sm btn-primary" type="submit">
                   <span class="glyphicon glyphicon-floppy-disk"></span>&nbsp; Guardar...
               </button>
-          </div>
-      </div>
+    </div>
   </div>
+</div>
 </form>
-
-{include="modal_buscar_articulo"}
+</div>
 {/if}
-
 {include="footer"}
+{include="modal_buscar_articulo"}
+{include="modal_producir"}

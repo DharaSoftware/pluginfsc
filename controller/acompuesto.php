@@ -19,10 +19,9 @@
  */
 
 /**
-
- * Description of Entrada al plugin para producir productos Compuestos por medio de Recetas
- *
- * @author Raul Mercado
+ *  acompuesto.php
+ *  Description of Entrada al plugin para producir productos Compuestos por medio de Recetas
+ *  @author Raul Mercado rgmercado@gmail.com
  */
 
 require_model('receta.php');
@@ -42,6 +41,9 @@ class acompuesto extends fs_controller {
       /*Load data with estructure data*/
       parent::private_core();
 
+      $this->listadoReceta();
+   }
+   protected function listadoReceta (){
       $this->resultados = $this->db->select("SELECT * FROM receta;");
    }
  }

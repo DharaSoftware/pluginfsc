@@ -68,9 +68,13 @@ class receta extends fs_model {
 
    private static $column_list;
    private $exists;
-
+/**
+ * Funcion constructora de la instancia receta, permite crear una instancia de la clase receta, vacia,
+ * o con datos que se pasan por parametros.
+ * @param array $data
+ */
    public function __construct($data = FALSE) {
-    SELF::$column_list ='idreceta,descripcion, idalmacening,idalmacenres,observaciones,articulo_res,idarticulo,produccion';
+    SELF::$column_list ='idreceta,descripcion,idalmacening,idalmacenres,observaciones,producto_res,idarticulo,produccion';
     parent::__construct('receta');
 
       if ($data) {
@@ -81,25 +85,25 @@ class receta extends fs_model {
    }
 
    public function clear() {
-      $this->idreceta = '';
-      $this->descripcion = '';
-      $this->idalmacening = '';
-      $this->idalmacenres = '';
-      $this->observaciones = '';
-      $this->producto_res = '';
-      $this->idarticulo = '';
-      $this->produccion = 0.0;
+      $this->idreceta       = '';
+      $this->descripcion    = '';
+      $this->idalmacening   = '';
+      $this->idalmacenres   = '';
+      $this->observaciones  = '';
+      $this->producto_res   = '';
+      $this->idarticulo     = '';
+      $this->produccion     = 0;
    }
 
    public function load_from_data($data) {
-      $this->idreceta = $data['idreceta'];
-      $this->descripcion = $data['descripcion'];
-      $this->idalmacening = $data['idalmacening'];
-      $this->idalmacenres = $data['idalmacenres'];
-      $this->observaciones = $data['observaciones'];
-      $this->producto_res = $data['producto_res'];
-      $this->idarticulo = $data['$idarticulo'];
-      $this->produccion = $data['produccion'];
+      $this->idreceta       = $data['idreceta'];
+      $this->descripcion    = $data['descripcion'];
+      $this->idalmacening   = $data['idalmacening'];
+      $this->idalmacenres   = $data['idalmacenres'];
+      $this->observaciones  = $data['observaciones'];
+      $this->producto_res   = $data['producto_res'];
+      $this->idarticulo     = $data['idarticulo'];
+      $this->produccion     = $data['produccion'];
    }
 
    public function install() {
@@ -125,7 +129,7 @@ class receta extends fs_model {
     */
    public function get($ref)
    {
-       $data = $this->db->select("SELECT " . self::$column_list . " FROM " . $this->table_name . " WHERE referencia = " . $this->var2str($ref) . ";");
+       $data = $this->db->select("SELECT " . self::$column_list . " FROM " . $this->table_name . " WHERE idreceta = " . $this->var2str($ref) . ";");
        if ($data) {
            return new \receta($data[0]);
        }
@@ -168,88 +172,67 @@ class receta extends fs_model {
    }
 
    /**
-    * Guarda en la base de datos los datos del artículo.
+    * Guarda en la base de datos los datos de la Receta
     * @return boolean
     */
    public function save()
    {
        if ($this->test()) {
-
-           if ($this->exists()) {
-               $sql = "UPDATE " . $this->table_name . " SET descripcion = " . $this->var2str($this->descripcion) .
-                   ", codfamilia = " . $this->var2str($this->codfamilia) .
-                   ", codfabricante = " . $this->var2str($this->codfabricante) .
-                   ", pvp = " . $this->var2str($this->pvp) .
-                   ", factualizado = " . $this->var2str($this->factualizado) .
-                   ", costemedio = " . $this->var2str($this->costemedio) .
-                   ", preciocoste = " . $this->var2str($this->preciocoste) .
-                   ", codimpuesto = " . $this->var2str($this->codimpuesto) .
-                   ", stockfis = " . $this->var2str($this->stockfis) .
-                   ", stockmin = " . $this->var2str($this->stockmin) .
-                   ", stockmax = " . $this->var2str($this->stockmax) .
-                   ", controlstock = " . $this->var2str($this->controlstock) .
-                   ", nostock = " . $this->var2str($this->nostock) .
-                   ", bloqueado = " . $this->var2str($this->bloqueado) .
-                   ", sevende = " . $this->var2str($this->sevende) .
-                   ", publico = " . $this->var2str($this->publico) .
-                   ", secompra = " . $this->var2str($this->secompra) .
-                   ", equivalencia = " . $this->var2str($this->equivalencia) .
-                   ", partnumber = " . $this->var2str($this->partnumber) .
-                   ", codbarras = " . $this->var2str($this->codbarras) .
-                   ", observaciones = " . $this->var2str($this->observaciones) .
-                   ", tipo = " . $this->var2str($this->tipo) .
-                   ", imagen = " . $this->var2str($this->imagen) .
-                   ", codsubcuentacom = " . $this->var2str($this->codsubcuentacom) .
-                   ", codsubcuentairpfcom = " . $this->var2str($this->codsubcuentairpfcom) .
-                   ", trazabilidad = " . $this->var2str($this->trazabilidad) .
-                   "  WHERE referencia = " . $this->var2str($this->referencia) . ";";
-
-               if ($this->nostock && $this->stockfis != 0) {
-                   $this->stockfis = 0.0;
-                   $sql .= "DELETE FROM stocks WHERE referencia = " . $this->var2str($this->referencia) . ";";
-                   $sql .= "UPDATE " . $this->table_name . " SET stockfis = " . $this->var2str($this->stockfis) .
-                       " WHERE referencia = " . $this->var2str($this->referencia) . ";";
-               }
-           } else {
-               $sql = "INSERT INTO " . $this->table_name . " (" . self::$column_list . ") VALUES (" .
-                   $this->var2str($this->referencia) . "," .
-                   $this->var2str($this->codfamilia) . "," .
-                   $this->var2str($this->codfabricante) . "," .
-                   $this->var2str($this->descripcion) . "," .
-                   $this->var2str($this->pvp) . "," .
-                   $this->var2str($this->factualizado) . "," .
-                   $this->var2str($this->costemedio) . "," .
-                   $this->var2str($this->preciocoste) . "," .
-                   $this->var2str($this->codimpuesto) . "," .
-                   $this->var2str($this->stockfis) . "," .
-                   $this->var2str($this->stockmin) . "," .
-                   $this->var2str($this->stockmax) . "," .
-                   $this->var2str($this->controlstock) . "," .
-                   $this->var2str($this->nostock) . "," .
-                   $this->var2str($this->bloqueado) . "," .
-                   $this->var2str($this->secompra) . "," .
-                   $this->var2str($this->sevende) . "," .
-                   $this->var2str($this->equivalencia) . "," .
-                   $this->var2str($this->codbarras) . "," .
-                   $this->var2str($this->observaciones) . "," .
-                   $this->var2str($this->imagen) . "," .
-                   $this->var2str($this->publico) . "," .
-                   $this->var2str($this->tipo) . "," .
-                   $this->var2str($this->partnumber) . "," .
-                   $this->var2str($this->codsubcuentacom) . "," .
-                   $this->var2str($this->codsubcuentairpfcom) . "," .
-                   $this->var2str($this->trazabilidad) . ");";
+         if ($this->exists()) {
+            if ($this->updateReceta()){
+              $this->new_message("Receta actualizada correctamente....");
+              return TRUE;
+            }
+          } else {
+              if ($this->insertReceta()){
+                return TRUE;
+              }
            }
-
-           if ($this->db->exec($sql)) {
-               $this->exists = TRUE;
-               return TRUE;
-           }
-       }
-
+        }
        return FALSE;
    }
+   /**
+    * Actualiza  en la base de datos los datos la Receta
+    * @return boolean
+    */
+   protected function updateReceta() {
+     $sql = "UPDATE " . $this->table_name . " SET
+            descripcion = " . $this->var2str($this->descripcion) .
+         ", idalmacening = " . $this->var2str($this->idalmacening) .
+         ", idalmacenres = " . $this->var2str($this->idalmacenres) .
+         ", observaciones = " . $this->var2str($this->observaciones) .
+         ", producto_res = " . $this->var2str($this->producto_res) .
+         ", idarticulo = " . $this->var2str($this->idarticulo) .
+         ", produccion = " . 0 .
+         "  WHERE idreceta = " . $this->var2str($this->idreceta) . ";";
+      if ($this->db->exec($sql)) {
+             $this->exists = TRUE;
+             return TRUE;
+      }
+    return FALSE;
+   }
+   /**
+    * Inserta en la base de datos los datos la Receta
+    * @return boolean
+    */
+  protected function insertReceta(){
+    $this->produccion = 0;
+    $sql = "INSERT INTO " . $this->table_name . " (" . self::$column_list . ") VALUES (" .
+            $this->var2str($this->idreceta) . "," .
+            $this->var2str($this->descripcion) . "," .
+            $this->var2str($this->idalmacening) . "," .
+            $this->var2str($this->idalmacenres) . "," .
+            $this->var2str($this->observaciones) . "," .
+            $this->var2str($this->producto_res) . "," .
+            $this->var2str($this->idarticulo) . "," .
+            $this->produccion . ");";
 
+    if ($this->db->exec($sql)) {
+       $this->exists = TRUE;
+       return TRUE;
+    }
+    return FALSE;
+  }
    /**
     * Elimina el artículo de la base de datos.
     * @return boolean
@@ -257,17 +240,32 @@ class receta extends fs_model {
    public function delete()
    {
 
-       /*
-       $sql .= "DELETE FROM receta_ingredientes WHERE idrecetar = " . $this->var2str($this->idreceta) . ";";
-       $sql .= "DELETE FROM receta_produccion WHERE idrecetar = " . $this->var2str($this->idreceta) . ";";
-       */
-       $sql = "DELETE FROM " . $this->table_name . " WHERE idreceta = " . $this->var2str($this->$idreceta) . ";";
-       if ($this->db->exec($sql)) {
+      $sql = "DELETE FROM " . $this->table_name . " WHERE idreceta = " . $this->var2str($this->$idreceta) . ";";
+      $sql .= "DELETE FROM receta_ingredientes WHERE idrecetar = " . $this->var2str($this->idreceta) . ";";
+      $sql .= "DELETE FROM receta_produccion WHERE idrecetar = " . $this->var2str($this->idreceta) . ";";
+
+      if ($this->db->exec($sql)) {
          $this->exists = FALSE;
          return TRUE;
-       }else {
+      }else {
           $this->new_error_msg("No se ha podido eliminar" . $this->idreceta);
           return FALSE;
-       }
+      }
    }
-  }
+   /*
+    * Metodo para actualizar un campo especifico de la tabla de productos Compuestos.
+    */
+
+    public function actualizaCampo($idcampo,$dato){
+
+        $sql = "UPDATE " . $this->table_name . " SET
+                $idcampo = " . $dato .
+                "  WHERE idreceta = " . $this->var2str($this->idreceta) . ";";
+        if ($this->db->exec($sql)) {
+            $this->exists = TRUE;
+            return TRUE;
+        }
+        return FALSE;
+   }
+
+}
