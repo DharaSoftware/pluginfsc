@@ -192,13 +192,14 @@ class nueva_receta  extends fs_controller {
     $p_idrec = $_POST['fp_idreceta'];
     $p_idart = $_POST['fp_idarticulo'];
     $p_cant = $_POST['fp_cantidad'];
+
     if (($p_idrec != '') && ($p_idart != '')) {
       $receta = new receta();
       if ($receta->exists()) {
             $this->registraProduccion($p_idrec,$p_cant); // Registro produccion en tabla receta_produccion
             $campo = 'produccion';
             $receta->actualizacampo($campo,$p_cant); // Actualiza la ultima cantidad producida en la table Receta
-            $this->actualizarStockArt($p_idrec); //Actualiza el inventario en el stock para cada articulo ingrediente
+            $this->actualizarStockArt($p_idrec,$p_cant); //Actualiza el inventario en el stock para cada articulo ingrediente
 
       }else {
         $this->new_error_msg("La Receta no existe....");
@@ -209,6 +210,7 @@ class nueva_receta  extends fs_controller {
  * Metodo para registrar la produccion en la tabla receta_produccion
  */
 private function registraProduccion($rpidrec,$rpcant){
+
   $rec_pro = new receta_produccion();
   $rec_pro->idrecetar = $rpidrec;
   $rec_pro->producidos = $rpcant;
@@ -225,7 +227,7 @@ private function registraProduccion($rpidrec,$rpcant){
 /**
  *Metodo para actualizar Stock del Artculo resultante de la Receta
  */
-private function actualizarStockArt($idr){
+private function actualizarStockArt($idr,$cant) {
     $array_ing = array();
     $ing_stk = new receta_ingrediente();
     $array_ing = $ing_stk->buscarIngredientes($idr, $offset = 0);

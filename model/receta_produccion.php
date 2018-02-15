@@ -33,7 +33,7 @@ class receta_produccion extends fs_model {
 
    public function __construct($data = FALSE) {
       parent::__construct('receta_produccion');
-      $this->$column_list ='id,idrecetar,producido,fecha';
+      $this->$column_list ='idrecetar,producido,fecha';
       $this->add_keyfield('id');
 
       if ($data) {
@@ -94,8 +94,7 @@ class receta_produccion extends fs_model {
     */
    protected function updateProduccion() {
      $sql = "UPDATE " . $this->table_name . " SET
-            id = " . $this->id .
-         ", producido = " . $this->producidos .
+            producido = " . $this->producidos .
          ", idalmacening = " . $this->fecha .
          "  WHERE id = " . $this->var2str($this->id) . ";";
 
@@ -112,7 +111,6 @@ class receta_produccion extends fs_model {
    protected function insertProduccion(){
 
     $sql = "INSERT INTO " . $this->table_name . " (" . $this->$column_list . ") VALUES (" .
-            $this->id . "," .
             $this->var2str($this->idrecetar) . "," .
             $this->producidos . "," .
             $this->fecha . ");";

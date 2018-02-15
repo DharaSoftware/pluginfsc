@@ -25,6 +25,8 @@
  */
 
 require_model('receta.php');
+require_model('receta_ingrediente');
+require_model('receta_produccion');
 
 class acompuesto extends fs_controller {
 
@@ -41,9 +43,31 @@ class acompuesto extends fs_controller {
       /*Load data with estructure data*/
       parent::private_core();
 
-      $this->listadoReceta();
+      if ((isset($_GET['eliminar'])) && ($_GET['eliminar']=='TRUE')) {
+  			$this->eliminarReceta();
+  		}else{
+        $this->listadoReceta();
+  		}
    }
    protected function listadoReceta (){
       $this->resultados = $this->db->select("SELECT * FROM receta;");
-   }
+  }
+  protected function eliminarReceta(){
+    if (isset($_GET['idr'])) {
+      $ingred = new receta_ingrediente();
+      $ingred->idrecetar = $_GET['idr'];
+      if ($ingred->detele()) {
+        $this->new_message("Ingredientes exitosamente eliminados");
+        $prod = new receta_produccion();
+        $prod->idrecetar = $_GET['idr'];
+        $prod->delete();
+        $receta = new receta();
+        $receta->idreceta = $_GET['idr'];
+        if ($receta->delete()) {
+            $this->new_message("Receta e ingredientes eliminados con exito...");
+
+        }
+      }
+    }
+  }
  }

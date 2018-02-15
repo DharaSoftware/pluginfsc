@@ -44,7 +44,7 @@ class articulo extends FacturaScripts\model\articulo {
 
   private function actualizaStock($stock_f){
 
-    $sql = "UPDATE articulo SET stockfis = " . $st_act . "  WHERE referencia = " . $this->var2str($art1->referencia) . ";";
+    $sql = "UPDATE articulo SET stockfis = " . $st_act . "  WHERE referencia = " . $this->var2str($this->referencia) . ";";
     if ($this->db->exec($sql)) {
         $this->exists = TRUE;
         return TRUE;

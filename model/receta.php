@@ -239,11 +239,7 @@ class receta extends fs_model {
     */
    public function delete()
    {
-
       $sql = "DELETE FROM " . $this->table_name . " WHERE idreceta = " . $this->var2str($this->$idreceta) . ";";
-      $sql .= "DELETE FROM receta_ingredientes WHERE idrecetar = " . $this->var2str($this->idreceta) . ";";
-      $sql .= "DELETE FROM receta_produccion WHERE idrecetar = " . $this->var2str($this->idreceta) . ";";
-
       if ($this->db->exec($sql)) {
          $this->exists = FALSE;
          return TRUE;

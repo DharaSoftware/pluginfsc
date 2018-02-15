@@ -5,6 +5,9 @@
       $("#modal_nueva_receta").modal('show');
       document.f_nueva_receta.referencia.focus();
    }
+   function eliminarReceta(){
+     $("#modal_eliminar").modal('show');
+   }
 
     $(document).ready(function() {
       if(window.location.hash.substring(1) == 'Nuevo')
@@ -35,7 +38,7 @@
                <div class="form-group">
                   <label class="col-sm-2 control-label">Referencia</label>
                   <div class="col-sm-10">
-                     <input class="form-control" type="text" name="referencia" maxlength=18" autocomplete="off"/>
+                     <input class="form-control" type="text" name="referencia" maxlength="18" autocomplete="off"/>
                      <p class="help-block">
                         Dejar en blanco para asignar una referencia automática.
                      </p>
@@ -124,10 +127,12 @@
       <tr>
         {loop="$fsc->resultados"}
         <tr>
-        <td>{$value['idreceta']}</td>
+        <td><a href="index.php?page=nueva_receta&m_receta=TRUE&idr={$value['idreceta']}">{$value['idreceta']}</a></td>
         <td>{$value['descripcion']}</td>
         <td>{$value['produccion']}</td>
         <td>{$value['produccion']}</td>
+        <td><button class="btn btn-sm btn-danger" type="button" onclick="eliminarReceta()">
+           <span class="glyphicon glyphicon-trash"></span></button></td>
       </tr>
         {/loop}
       </tr>
@@ -139,5 +144,5 @@
     {/if}
   </div>
 </div>
-
 {include="footer"}
+{include="modal_eliminar"}
