@@ -5,7 +5,9 @@
       $("#modal_nueva_receta").modal('show');
       document.f_nueva_receta.referencia.focus();
    }
-   function eliminarReceta(){
+   function eliminarReceta(idr){
+     var ref = idr;
+     document.f_eliminar_rect.refe.value = ref;
      $("#modal_eliminar").modal('show');
    }
 
@@ -127,11 +129,11 @@
       <tr>
         {loop="$fsc->resultados"}
         <tr>
-        <td><a href="index.php?page=nueva_receta&m_receta=TRUE&idr={$value['idreceta']}">{$value['idreceta']}</a></td>
+        <td name="{$value['idreceta']}" value="{$value['idreceta']}"><a href="index.php?page=acompuesto&m_receta=TRUE&idr={$value['idreceta']}">{$value['idreceta']}</a></td>
         <td>{$value['descripcion']}</td>
         <td>{$value['produccion']}</td>
         <td>{$value['produccion']}</td>
-        <td><button class="btn btn-sm btn-danger" type="button" onclick="eliminarReceta()">
+        <td><button class="btn btn-sm btn-danger" type="button" onclick="eliminarReceta('{$value['idreceta']}')">
            <span class="glyphicon glyphicon-trash"></span></button></td>
       </tr>
         {/loop}

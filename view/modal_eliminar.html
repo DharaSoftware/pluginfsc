@@ -1,6 +1,7 @@
 <!-- Forma modal para la ventana emegente de nueva receta-->
 
-<form class="form-horizontal" role="form" name="f_eliminar_rect" action="{$fsc->url()}&eliminar='TRUE'&idr={$fsc->receta->" method="post">
+<form class="form-horizontal" role="form" name="f_eliminar_rect" action="{$fsc->url()}&eliminar='TRUE'" method="post">
+    <input id="fer_referencia" name="refe"  value="" type="hidden" />
     <div class="modal" id="modal_eliminar">
        <div class="modal-dialog">
           <div class="modal-content">

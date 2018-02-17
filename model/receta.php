@@ -239,7 +239,7 @@ class receta extends fs_model {
     */
    public function delete()
    {
-      $sql = "DELETE FROM " . $this->table_name . " WHERE idreceta = " . $this->var2str($this->$idreceta) . ";";
+      $sql = "DELETE FROM " . $this->table_name . " WHERE idreceta = " . $this->var2str($this->idreceta) . ";";
       if ($this->db->exec($sql)) {
          $this->exists = FALSE;
          return TRUE;
@@ -263,5 +263,43 @@ class receta extends fs_model {
         }
         return FALSE;
    }
+   /*
+    * Devuelve un arreglo de instancias de objetos de la clase de receta
+    * @return \receta
+    */
+   private function all_from($sql, $offset = 0, $limit = FS_ITEM_LIMIT)
+   {
+       $reclist = array();
+       $data = $this->db->select_limit($sql, $limit, $offset);
+       if ($data) {
+           foreach ($data as $a) {
+               $reclist[] = new \receta($a);
+           }
+       }
+
+       return $reclist;
+   }
+   /**
+    * Devuelve un array con los artículos encontrados en base a la búsqueda.
+    * @param string $query
+    * @param integer $offset
+    * @return \receta
+    */
+  public function buscarReceta($query = '', $offset = 0)
+   {
+       $inglist = array();
+       $query = $this->no_html(mb_strtolower($query, 'UTF8'));
+       if (count($inglist) <= 1) {
+          $sql = "SELECT " . self::$column_list . " FROM " . $this->table_name;
+          $separador = ' WHERE';
+          if ($query == '') {
+              $sql .= $separador . " (idreceta = " . $this->var2str($query)
+                   . " OR idrecetar LIKE '%" . $query . "%'" . ")";
+              $sql .= " ORDER BY lower(idreceta) ASC";
+           }
+        }
+      $inglist = $this->all_from($sql, $offset);
+      return $inglist;
+  }
 
 }

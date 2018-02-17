@@ -25,6 +25,7 @@
  */
 class receta_produccion extends fs_model {
 
+   public $id;
    public $idrecetar;
    public $producidos;
    public $fecha;
@@ -33,8 +34,7 @@ class receta_produccion extends fs_model {
 
    public function __construct($data = FALSE) {
       parent::__construct('receta_produccion');
-      $this->$column_list ='idrecetar,producido,fecha';
-      $this->add_keyfield('id');
+      SELF::$column_list ='idrecetar,producido,fecha';
 
       if ($data) {
          $this->load_from_data($data);
@@ -49,7 +49,7 @@ class receta_produccion extends fs_model {
     */
    public function exists() {
      if (!$this->exists) {
-         if ($this->db->select("SELECT id FROM " . $this->table_name . " WHERE id = " . $this->var2str($this->idreceta) . ";")) {
+         if ($this->db->select("SELECT id FROM " . $this->table_name . " WHERE id = " . $this->var2str($this->id) . ";")) {
              $this->exists = TRUE;
          }
      }
@@ -110,7 +110,7 @@ class receta_produccion extends fs_model {
     */
    protected function insertProduccion(){
 
-    $sql = "INSERT INTO " . $this->table_name . " (" . $this->$column_list . ") VALUES (" .
+    $sql = "INSERT INTO " . $this->table_name . " (" . $this->column_list . ") VALUES (" .
             $this->var2str($this->idrecetar) . "," .
             $this->producidos . "," .
             $this->fecha . ");";
@@ -143,7 +143,7 @@ class receta_produccion extends fs_model {
 
    public function delete()
    {
-       $sql = "DELETE FROM " . $this->table_name . " WHERE id = " . $this->var2str($this->$id) . ";";
+       $sql = "DELETE FROM " . $this->table_name . " WHERE id = " . $this->var2str($this->id) . ";";
        if ($this->db->exec($sql)) {
          $this->exists = FALSE;
          return TRUE;
@@ -154,7 +154,7 @@ class receta_produccion extends fs_model {
     }
       public function deleteEspProduccion()
    {
-       $sql = "DELETE FROM " . $this->table_name . " WHERE id = " . $this->var2str($this->$id) . "AND" . "fecha = " . $this->fecha . ";";
+       $sql = "DELETE FROM " . $this->table_name . " WHERE id = " . $this->var2str($this->id) . "AND" . "fecha = " . $this->fecha . ";";
        if ($this->db->exec($sql)) {
          $this->exists = FALSE;
          return TRUE;

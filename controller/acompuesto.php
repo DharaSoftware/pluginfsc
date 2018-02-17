@@ -36,6 +36,7 @@ class acompuesto extends fs_controller {
    }
 
    public $resultados = array();
+   public $ref;
 
    protected function private_core() {
       // configure delete action
@@ -43,28 +44,30 @@ class acompuesto extends fs_controller {
       /*Load data with estructure data*/
       parent::private_core();
 
-      if ((isset($_GET['eliminar'])) && ($_GET['eliminar']=='TRUE')) {
-  			$this->eliminarReceta();
+      if ((isset($_GET['eliminar'])) && ($_GET['eliminar'] = 'TRUE')) {
+          $idrec = $_POST['refe'];
+          $this->eliminarReceta($idrec);
   		}else{
-        $this->listadoReceta();
+          $this->listadoReceta();
   		}
    }
    protected function listadoReceta (){
       $this->resultados = $this->db->select("SELECT * FROM receta;");
   }
-  protected function eliminarReceta(){
-    if (isset($_GET['idr'])) {
+  protected function eliminarReceta($ref){
+    if ($ref != '') {
       $ingred = new receta_ingrediente();
-      $ingred->idrecetar = $_GET['idr'];
-      if ($ingred->detele()) {
+      $ingred->idrecetar = $ref;
+      if ($ingred->delete()) {
         $this->new_message("Ingredientes exitosamente eliminados");
         $prod = new receta_produccion();
-        $prod->idrecetar = $_GET['idr'];
+        $prod->idrecetar = $ref;
         $prod->delete();
         $receta = new receta();
-        $receta->idreceta = $_GET['idr'];
+        $receta->idreceta = $ref;
         if ($receta->delete()) {
             $this->new_message("Receta e ingredientes eliminados con exito...");
+            $this->listadoReceta();
 
         }
       }

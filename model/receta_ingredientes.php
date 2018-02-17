@@ -95,8 +95,7 @@ class receta_ingrediente extends fs_model {
     * @return boolean
     */
    protected function insertIngrediente(){
-    $this->id = '';
-    $sql = "INSERT INTO " . $this->table_name . " (" . SELF::$column_list . ") VALUES (" .
+        $sql = "INSERT INTO " . $this->table_name . " (" . SELF::$column_list . ") VALUES (" .
             $this->var2str($this->idrecetar) . "," .
             $this->var2str($this->idarticulor) . "," .
             $this->necesarios . "," .
@@ -126,7 +125,7 @@ class receta_ingrediente extends fs_model {
    }
    public function delete()
    {
-       $sql = "DELETE FROM " . $this->table_name . " WHERE id = " . $this->var2str($this->id) . ";";
+       $sql = "DELETE FROM " . $this->table_name . " WHERE idrecetar = " . $this->var2str($this->idrecetar) . ";";
        if ($this->db->exec($sql)) {
          $this->exists = FALSE;
          return TRUE;
