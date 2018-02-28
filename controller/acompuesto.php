@@ -51,8 +51,9 @@ class acompuesto extends fs_controller {
           $this->listadoReceta();
   		}
    }
-   protected function listadoReceta (){
+   public function listadoReceta (){
       $this->resultados = $this->db->select("SELECT * FROM receta;");
+      
   }
   protected function eliminarReceta($ref){
     if ($ref != '') {

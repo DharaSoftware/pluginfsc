@@ -30,6 +30,7 @@ require_model('receta_produccion');
 require_model('articulo');
 require_model('almacen');
 
+
 class nueva_receta  extends fs_controller {
   public $almacenes;
   public $fabricante;
@@ -41,11 +42,20 @@ class nueva_receta  extends fs_controller {
   public $nreceta = FALSE; //Variable para control de resultado de crear una receta
   public $ref_ca;
   public $cod_art;
+  public $m_receta;
+  public $resultado = array();
+  public $resul_ingre = array();
+
 
   public function __construct() {
         parent::__construct(__CLASS__, 'Nueva Receta', 'ventas', FALSE, FALSE, TRUE);
    }
 
+  /**
+   * private_core
+   * Metodo de entrada del controlador a la clase nueva_receta
+   * @return void
+   */
   protected function private_core() {
       // configure delete action
       $this->allow_delete = $this->user->allow_delete_on(__CLASS__);
@@ -55,17 +65,25 @@ class nueva_receta  extends fs_controller {
     if (isset($_POST['referencia'])) {
 			$this->entradaReceta();
 		}elseif ($this->query != '') {
-      $this->new_search();
-		}elseif ((isset($_GET['n_receta'])) && ($_GET['n_receta']=='nc_insert')){
+            $this->new_search();
+		}elseif ((isset($_GET['n_receta'])) && ($_GET['n_receta']=='nc_insert') && ($_GET['gm_receta']=='')){
 			$this->newReceta();
 		}elseif (isset($_GET['prod']) && ($_GET['prod']=='producir')){
-      $this->producir();
-    }
-  }
-  /**
-   * Abre la vista para elaborar la nueva receta o producto compuesto
-   * Crea una instacia de la clase receta y otra con los almacenes
-   */
+            $this->producir();
+        }elseif (isset($_GET['m_receta']) && ($_GET['m_receta']=='TRUE') && ($_GET['gm_receta']=='')) {
+            $ref = $_GET['idr'];
+            $this->modificaReceta($ref);
+        }elseif (isset($_GET['gm_receta']) && ($_GET['gm_receta']=='TRUE')) {
+            $this->guardarModificarReceta();
+        }
+}
+
+	/**
+	 * entradaReceta
+	 * Abre la vista para elaborar la nueva receta o producto compuesto
+     * Crea una instacia de la clase receta y otra con los almacenes
+	 * @return void
+	 */
 	private function entradaReceta() {
 		$almacen = new \almacen();
     $this->familia = new \familia();
@@ -88,14 +106,17 @@ class nueva_receta  extends fs_controller {
         $this->msg_error='TRUE';
     }
 	}
-/*
- * Nueva receta este metodo permite guarar la nueva receta con sus ingredientes
- */
+
+  /**
+   * newReceta
+   * Este metodo permite guarar la nueva receta con sus ingredientes
+   * @return void
+   */
   private function newReceta() {
 
       if ($_POST['nr_idreceta'] != '') {
         $this->cod_art = $this->crearArticulo($_POST['nr_idreceta'],$_POST['nr_articulo_res']); // Creamos el articulo resultante
-      /* Guardamos los ingredientes del articulo compuesto Receta */
+        /* Guardamos los ingredientes del articulo compuesto Receta */
         for ($i=0; $i < $_POST['nlinea']; $i++) {
             $objri = new receta_ingrediente();
             $objri->id = '';
@@ -124,9 +145,12 @@ class nueva_receta  extends fs_controller {
         if ($rect->save()) {
             $this->nreceta = TRUE;
             $this->new_message("Receta creada correctamente....");
+            header("Location: index.php?page=acompuesto");
         }else{
             $this->new_error_msg("La Receta no se pudo crear, verifique....");
             $this->new_message("Limpiando datos Receta....");
+            /**Elimino la receta tabla recteta y los ingredientes que
+             * se habian creado tabla receta_ingredientes */
             $art = new articulo();
             $art->referencia = $rect->idarticulo;
             $art->delete();
@@ -136,10 +160,13 @@ class nueva_receta  extends fs_controller {
         }
 
       }
-  }
-  /**
-   *  Metodo para crear el articulo compuesto resultante de la receta en la tabla articulo
-   *  @return  $art0->referencia codigo de referencia del articulo
+   }
+
+   /* crearArticulo
+   *
+   * @param mixed $ref
+   * @param mixed $des_nr
+   * @return $art0->referencia codigo de referencia del articulo
    */
   private function crearArticulo($ref,$des_nr) {
 
@@ -184,8 +211,11 @@ class nueva_receta  extends fs_controller {
     }
     return $this->ref_ca;
   }
+
   /**
+   * producir
    * Metodo para generar produccion, la cantidad de producto a producir
+   * @return void
    */
   private function producir (){
     /*..Recojo los valores de la forma proucir..*/
@@ -200,14 +230,18 @@ class nueva_receta  extends fs_controller {
             $campo = 'produccion';
             $receta->actualizacampo($campo,$p_cant); // Actualiza la ultima cantidad producida en la table Receta
             $this->actualizarStockArt($p_idrec,$p_cant); //Actualiza el inventario en el stock para cada articulo ingrediente
-
       }else {
         $this->new_error_msg("La Receta no existe....");
       }
     }
   }
+
 /**
+ * registraProduccion
  * Metodo para registrar la produccion en la tabla receta_produccion
+ * @param mixed $rpidrec
+ * @param mixed $rpcant
+ * @return void
  */
 private function registraProduccion($rpidrec,$rpcant){
 
@@ -225,7 +259,11 @@ private function registraProduccion($rpidrec,$rpcant){
 }
 
 /**
- *Metodo para actualizar Stock del Artculo resultante de la Receta
+ * actualizarStockArt
+ * Metodo para actualizar Stock del Articulo resultante de la Receta
+ * @param mixed $idr
+ * @param mixed $cant
+ * @return void
  */
 private function actualizarStockArt($idr,$cant) {
     $array_ing = array();
@@ -236,12 +274,109 @@ private function actualizarStockArt($idr,$cant) {
       $this->seekArticulo($array_ing[$i]->idarticulo,$array_ing[$i]->necesarios);
     }
 }
-
 /**
+ * modificaReceta funcion
+ * Permite modificar la receta
+ * @param  [type varchar] $ref [identificador de la receta]
+ * @return [void]
+ */
+private function modificaReceta($ref)
+{
+  $almacen = new \almacen();
+  $this->familia = new \familia();
+  $this->fabricante = new \fabricante();
+  $this->almacenes = $almacen->all();
+  $m_result = array(); // arreglo generado de la busqueda de la receta y sus ingredientes
+  $this->m_receta = "TRUE"; //Variable de control de la vista
+  $this->msg_error='FALSE';
+  $brec = new receta();
+  $brec->idreceta = $ref;
+  $this->receta = $brec->buscarUnaReceta($brec->idreceta);
+  $this->receta->produccion  =   0;
+  $ingred = new receta_ingrediente();
+  $this->i_resul = $ingred->buscarIngredientes($brec->idreceta);
+  foreach ($this->i_resul as $ingre0) {
+     $art = new \articulo;
+     $art0 = $art->buscaArticulo($ingre0->idarticulor);
+     $this->resultado[] = array('id'          => $ingre0->id,
+                                 'idrecetar'   => $ingre0->idrecetar,
+                                 'idarticulor' => $ingre0->idarticulor,
+                                 'necesarios'  => $ingre0->necesarios,
+                                 'idlinea'     => $ingre0->idlinea,
+                                 'descripcion' => $art0->descripcion,
+                                 'preciocoste' => $art0->preciocoste,
+                                 'stockfis'    => $art0->stockfis,
+                                );
+    unset($art);
+    }
+  }
+  /**
+   * [Permite guardar las modificaciones de una receta]
+   * @method guardarModificarReceta
+   * @return [void] [description]
+   */
+
+  private function guardarModificarReceta(){
+    $this->msg_error='FALSE';
+    if ($_POST['nr_idreceta'] != '') {
+      $this->cod_art = $this->crearArticulo($_POST['nr_idreceta'],$_POST['nr_articulo_res']); // Creamos el articulo resultante
+      /*Elimino los ingredientes existentes*/
+      $ring = new receta_ingrediente();
+      $ring->idrecetar = $_POST['nr_idreceta'];
+      $ring->delete();
+      unset($ring);
+      /* Guardamos los ingredientes del articulo compuesto Receta */
+      for ($i=0; $i < $_POST['nlinea']; $i++) {
+          $objri = new receta_ingrediente();
+          $objri->id = '';
+          $objri->idrecetar = $_POST['nr_idreceta'];
+          $objri->idarticulor = $_POST["referencia_$i"];
+          $objri->necesarios = $_POST["neces_$i"];
+          $objri->idlinea = $i;
+          if ($objri->save()) {
+              $this->new_message("Componentes linea: $i guadados satisfactoriamente....");
+              unset($objri);
+          } else {
+              $this->new_error_msg("Fallo el grabar los Componentes de la Receta linea: $i....");
+          }
+      }
+      /*Guardamos los datos de la Receta*/
+      $rect = new receta();
+      $rect->idreceta = $_POST['nr_idreceta'];
+      $rect->descripcion = $_POST['nr_descripcion'];
+      $rect->idalmacening = $_POST['nr_almacening'];
+      $rect->idalmacenres = $_POST['nr_almacenres'];
+      $rect->producto_res = $_POST['nr_articulo_res'];
+      $rect->observaciones = $_POST['nr_observaciones'];
+      $rect->idarticulo =  $this->cod_art;
+      $rect->produccion  =   0;
+      $rect->necesarios = $_POST['nr_cantidad'];
+      if ($rect->save()) {
+          $this->nreceta = TRUE;
+          $this->new_message("Receta creada correctamente....");
+          header("Location: index.php?page=acompuesto");
+      }else{
+          $this->new_error_msg("La Receta no se pudo crear, verifique....");
+          $this->new_message("Limpiando datos Receta....");
+          /**Elimino la receta tabla recteta y los ingredientes que
+           * se habian creado tabla receta_ingredientes */
+          $art = new articulo();
+          $art->referencia = $rect->idarticulo;
+          $art->delete();
+          $ring = new receta_ingrediente();
+          $ring->idrecetar = $rect->idreceta;
+          $ring->delete();
+      }
+
+    }
+  }
+
+  /**
+   * new_search
    * Metodo tomado de facturacion_base, para la busqueda de articulos
    * @return JSON array rest
    */
-   private function new_search()
+    private function new_search()
     {
         /// desactivamos la plantilla HTML
         $this->template = FALSE;

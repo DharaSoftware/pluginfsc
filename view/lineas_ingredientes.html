@@ -11,7 +11,23 @@
         <th class="text-left" width="90">Necesarios</th>
        </tr>
     </thead>
-    <tbody id="lineas_doc"></tbody>
+    <tbody id="lineas_doc">
+      {if="$fsc->m_receta=='TRUE'"}
+        {loop="$fsc->resultado"}
+            <tr id="linea_{$value['idlinea']}" data-ref="{$value['id']}" />
+            <td><input type="hidden" name="idlinea_{$value['idlinea']}" value="-1" />
+                <input type="hidden" name="referencia_{$value['idlinea']}" value="{$value['idarticulor']}" />
+                <div class="form-control"> <small> <a target="_blank" href="index.php?page=ventas_articulo&ref={$value['idarticulor']}"> {$value['idarticulor']} </a></small></div></td>
+            <td><textarea class="form-control" id="desc_{$value['idlinea']}" name="desc_{$value['idlinea']}" rows="1" /> {$value['descripcion']}</textarea></td>
+            <td><input type="input_number" step="any" id="coste_{$value['idlinea']}" class="form-control text-left" name="coste_{$value['idlinea']}" autocomplete="off" value="{$value['preciocoste']}" /></td>
+            <td><input type="input_number" step="any" id="stock_{$value['idlinea']}" class="form-control text-left" name="stock_{$value['idlinea']}" autocomplete="off" value="{$value['stockfis']}" /></td>
+            <td><input type="input_number" step="any" id="neces_{$value['idlinea']}" class="form-control text-left" name="neces_{$value['idlinea']}" autocomplete="off" value="{$value['necesarios']}" /></td>
+            <td><button class="btn btn-sm btn-danger" type="button" onclick="$('#linea_{$value['idlinea']}').remove();" />
+            <span class="glyphicon glyphicon-trash"></span></button></td>
+          </tr>
+        {/loop}
+      {/if}
+    </tbody>
     <tr class="info">
       <td>
         <input id="i_new_line" class="form-control" type="text" placeholder="Buscar para añadir..." autocomplete="off" />
@@ -23,6 +39,5 @@
       </td>
       <td colspan="12"></td>
     </tr>
-
   </table>
 </div>

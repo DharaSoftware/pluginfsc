@@ -68,6 +68,7 @@ class receta extends fs_model {
 
    private static $column_list;
    private $exists;
+   public $r_rec;
 /**
  * Funcion constructora de la instancia receta, permite crear una instancia de la clase receta, vacia,
  * o con datos que se pasan por parametros.
@@ -273,7 +274,7 @@ class receta extends fs_model {
        $data = $this->db->select_limit($sql, $limit, $offset);
        if ($data) {
            foreach ($data as $a) {
-               $reclist[] = new \receta($a);
+               $reclist[] = new receta($a);
            }
        }
 
@@ -283,23 +284,32 @@ class receta extends fs_model {
     * Devuelve un array con los artículos encontrados en base a la búsqueda.
     * @param string $query
     * @param integer $offset
-    * @return \receta
+    * @return object \receta
     */
-  public function buscarReceta($query = '', $offset = 0)
+  public function buscarRecetas($query = '', $offset = 0)
    {
-       $inglist = array();
-       $query = $this->no_html(mb_strtolower($query, 'UTF8'));
-       if (count($inglist) <= 1) {
-          $sql = "SELECT " . self::$column_list . " FROM " . $this->table_name;
-          $separador = ' WHERE';
-          if ($query == '') {
-              $sql .= $separador . " (idreceta = " . $this->var2str($query)
-                   . " OR idrecetar LIKE '%" . $query . "%'" . ")";
-              $sql .= " ORDER BY lower(idreceta) ASC";
-           }
-        }
+       $sql = "SELECT " . self::$column_list . " FROM " . $this->table_name;
+        $separador = ' WHERE';
+        $sql .= $separador . " (idreceta = " . $this->var2str($query) . ")";
+
       $inglist = $this->all_from($sql, $offset);
       return $inglist;
   }
+  /**
+   * Devuelve un array con los artículos encontrados en base a la búsqueda.
+   * @param string $ref
+   * @param integer $offset
+   * @return object \receta
+   */
+ public function buscarUnaReceta($ref = '', $offset = 0, $limit = FS_ITEM_LIMIT)
+  {
+    $sql = "SELECT " . self::$column_list . " FROM " . $this->table_name;
+    $separador = ' WHERE';
+    $sql .= $separador . " (idreceta = " . $this->var2str($ref) . ")";
+    $data = $this->db->select_limit($sql, $limit, $offset);
 
+    if ($data){
+      return new \receta($data[0]);
+    }
+ }
 }

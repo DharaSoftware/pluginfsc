@@ -4,7 +4,6 @@
   nueva_venta_url = '{$fsc->url()}';
 </script>
 
-
 <!--Bontones del top de recargar, y nueva receta-->
 <div class="container-fluid" style="margin-bottom: 10px;">
   <div class="row">
@@ -33,19 +32,19 @@
     </div>
   </div>
   <!--Forma de entrada de Datos de la receta-->
-  <form id="nreceta" name="f_new_receta" action="{$fsc->url()}&n_receta=nc_insert" method="post">
+  <form id="nreceta" name="f_new_receta" action="{$fsc->url()}&n_receta=nc_insert&gm_receta={$fsc->m_receta}" method="post">
     <input id="nr_referencia" name="nr_idreceta" value="{$fsc->receta->idreceta}" type="hidden" />
-    <input id="nlinea" name="nlinea"  value="" type="hidden" />
+    <input id="nlinea" name="nlinea"  value="$('#lineas_doc tr').length;" type="hidden" />
     <div class="row" style="margin-top: 15px;">
       <div class="form-group">
         <div class="col-xs-4"><b>Descripción</b>
           <input type="text" name="nr_descripcion" class="form-control" value="{$fsc->receta->descripcion}" autocomplete="off" required="" />
         </div>
         <div class="col-xs-4"><b>Articulo Resultante</b>
-          <input type="text" name="nr_articulo_res" class="form-control" value="{$fsc->receta->producto_res}" autocomplete="off" readonly="readonly" required="" />
+          <input type="text" name="nr_articulo_res" class="form-control" value="{$fsc->receta->producto_res}" autocomplete="off" required="" />
         </div>
         <div class="col-xs-2"><b>Cantidad</b>
-          <input type="text" name="nr_cantidad" class="form-control" placeholder="Cantidad" autocomplete="off" required="" />
+          <input type="text" name="nr_cantidad" class="form-control" placeholder="Cantidad" autocomplete="off"  value="1" />
         </div>
       </div>
     </div>
@@ -55,7 +54,7 @@
       <div class="form-group">
         <div class="col-xs-3"><b>Almacén de Ingredientes:</b>
           <select name="nr_almacening" class="form-control" id="nr_idalmacening">
-                    <option value="">------</option>
+                    <option value="{$fsc->receta->idalmacening}">-----</option>
                      {loop="$fsc->almacenes"}
                       <option value="{$value->codalmacen}">{$value->nombre}</option>
                     {/loop}
@@ -64,14 +63,14 @@
         <!-- Bloque de Almacenes Alamcen Producto resultante -->
         <div class="col-xs-3"><b>Almacén de Productos resultantes:</b>
           <select name="nr_almacenres" class="form-control" id="nr_idalmaceres">
-                    <option value="">------</option>
+                    <option value="{$fsc->receta->idalmacenres}">-----</option>
                      {loop="$fsc->almacenes"}
                       <option value="{$value->codalmacen}">{$value->nombre}</option>
                     {/loop}
                 </select>
         </div>
         <div class="col-xs-4"><b>Observaciones</b>
-          <textarea name="nr_observaciones" class="form-control" placeholder="Observaciones" rows="3"></textarea>
+          <textarea name="nr_observaciones" class="form-control" placeholder="Observaciones" rows="3" value="{$fsc->receta->observaciones}">{$fsc->receta->observaciones}</textarea>
         </div>
       </div>
     </div>

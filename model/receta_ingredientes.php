@@ -30,11 +30,12 @@ class receta_ingrediente extends fs_model {
    public $necesarios;
    public $idlinea;
    private static $column_list;
+   private static $column_ri;
    private $exists;
 
    public function __construct($data = FALSE) {
       parent::__construct('receta_ingredientes');
-      SELF::$column_list = 'idrecetar,idarticulor,necesarios,idlinea';
+      SELF::$column_list = 'idrecetar, idarticulor, necesarios, idlinea';
       //$this->add_keyfield('id');
       if ($data) {
          $this->load_from_data($data);
@@ -77,7 +78,8 @@ class receta_ingrediente extends fs_model {
     * Actualiza  en la base de datos los datos la Receta
     * @return boolean
     */
-   protected function updateIngrediente() {
+   protected function updateIngrediente()
+   {
      $sql = "UPDATE " . $this->table_name . " SET
                idrecetar = " . $this->var2str($this->idrecetar) .
             ", idarticulor = " . $this->var2str($this->idarticulor) .
@@ -94,7 +96,8 @@ class receta_ingrediente extends fs_model {
     * Inserta en la base de datos los datos la Receta
     * @return boolean
     */
-   protected function insertIngrediente(){
+   protected function insertIngrediente()
+   {
         $sql = "INSERT INTO " . $this->table_name . " (" . SELF::$column_list . ") VALUES (" .
             $this->var2str($this->idrecetar) . "," .
             $this->var2str($this->idarticulor) . "," .
@@ -149,10 +152,10 @@ class receta_ingrediente extends fs_model {
    private function all_from($sql, $offset = 0, $limit = FS_ITEM_LIMIT)
    {
        $artilist = array();
-       $data = $this->db->select_limit($sql, $limit, $offset);
+       $data = $this->db->select_limit($sql,$limit, $offset);
        if ($data) {
            foreach ($data as $a) {
-               $artilist[] = new \articulo($a);
+               $artilist[] = new \receta_ingrediente($a);
            }
        }
 
@@ -164,12 +167,12 @@ class receta_ingrediente extends fs_model {
     * @param integer $offset
     * @return \articulo
     */
-   public function buscarIngredientes($query = '', $offset = 0)
+   public function buscarIngredientes($query = '', $offset = 0, $limit = FS_ITEM_LIMIT)
    {
        $inglist = array();
        $query = $this->no_html(mb_strtolower($query, 'UTF8'));
        if (count($inglist) <= 1) {
-          $sql = "SELECT " . self::$column_list . " FROM " . $this->table_name;
+          $sql = "SELECT * FROM " . $this->table_name;
           $separador = ' WHERE';
           if ($query == '') {
               $sql .= $separador . " (idrecetar = " . $this->var2str($query)
@@ -177,7 +180,7 @@ class receta_ingrediente extends fs_model {
               $sql .= " ORDER BY lower(idrecetar) ASC";
            }
         }
-      $inglist = $this->all_from($sql, $offset);
+      $inglist = $this->all_from($sql, $offset,$limit);
       return $inglist;
    }
 }

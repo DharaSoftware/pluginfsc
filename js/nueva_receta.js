@@ -254,7 +254,6 @@ function disable_inputs(name, value)
 
 function add_articulo(ref, desc, coste, stock, necesarios)
 {
-    var nliena;
     $("#lineas_doc").append("<tr id=\"linea_" + numlineas + "\" data-ref=\"" + ref + "\">\n\
       <td><input type=\"hidden\" name=\"idlinea_" + numlineas + "\" value=\"-1\"/>\n\
           <input type=\"hidden\" name=\"referencia_" + numlineas + "\" value=\"" + ref + "\"/>\n\
@@ -271,7 +270,8 @@ function add_articulo(ref, desc, coste, stock, necesarios)
     numlineas += 1;
     $("#modal_articulos").modal('hide');
     $("#desc_" + (numlineas - 1)).select();
-    document.f_new_receta.nlinea.value = numlineas;
+    //document.f_new_receta.nlinea.value = numlineas;
+    //var nFilas = $("#lineas_doc tr").length;
     return false;
 }
 
@@ -591,6 +591,8 @@ $(document).ready(function () {
          event.preventDefault();
          show_producir();
       });
+    var nlineas = $("#lineas_doc tr").length;
+    document.f_new_receta.nlinea.value = nlineas;
 });
 
 function show_producir()
