@@ -23,7 +23,7 @@
   </columna>
   <columna>
     <nombre>fecha</nombre>
-    <tipo>timestamp</tipo>
+    <tipo>datetime</tipo>
     <nulo>NO</nulo>
   </columna>
   <restriccion>
