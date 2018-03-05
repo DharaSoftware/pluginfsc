@@ -1,6 +1,6 @@
 <!-- Forma modal para la ventana emegente de nueva receta-->
 
-<form class="form-horizontal" role="form" name="fp_producir" action="{$fsc->url()}&prod='producir'" method="post">
+<form class="form-horizontal" role="form" name="fp_producir" action="{$fsc->url()}&prod=producir" method="post">
     <input type="hidden" name="fp_idreceta" value="{$fsc->receta->idreceta}">
     <input type="hidden" name="fp_idarticulo" value="{$fsc->receta->idarticulo}">
     <div class="modal" id="modal_producir">
@@ -23,13 +23,13 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Articulo Resultante</label>
                         <div class="col-sm-10">
-                        <input class="form-control" type="text" name="articulo_res" autocomplete="off" value="{$fsc->receta->articulo_res}" readonly="readonly"/>
+                        <input class="form-control" type="text" name="articulo_res" autocomplete="off" value="{$fsc->receta->producto_res}" readonly="readonly"/>
                         </div>
                     </div>
                     <div class="form-group">
                     <label class="col-sm-2 control-label">Cantidad:</label>
                     <div class="col-sm-2">
-                        <input class="form-control" type="text" name="fp_cantidad" autocomplete="off" required/>
+                        <input class="form-control" type="number" name="fp_cantidad" value="0" autocomplete="off" />
                     </div>
                     </div>
 
@@ -43,3 +43,19 @@
        </div>
     </div>
  </form>
+ <script>
+     function show_producir()
+     {
+        $("#modal_producir").modal('show');
+        document.fp_producir.fp_cantidad.select();
+     }
+    $(document).ready(function() {
+         if(window.location.hash.substring(1) == 'Producir') {
+              show_producir();
+           }
+         $("#b_produccion").click(function(event) {
+              event.preventDefault();
+              show_producir();
+           });
+    });
+ </script>

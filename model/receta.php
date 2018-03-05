@@ -65,6 +65,11 @@ class receta extends fs_model {
     * @var double
     */
    public $produccion;
+   /**
+    * [Fecha de la ultima Produccion]
+    * @var [type date]
+    */
+   public $fechap;
 
    private static $column_list;
    private $exists;
@@ -75,7 +80,7 @@ class receta extends fs_model {
  * @param array $data
  */
    public function __construct($data = FALSE) {
-    SELF::$column_list ='idreceta,descripcion,idalmacening,idalmacenres,observaciones,producto_res,idarticulo,produccion';
+    SELF::$column_list ='idreceta,descripcion,idalmacening,idalmacenres,observaciones,producto_res,idarticulo,produccion,fechap';
     parent::__construct('receta');
 
       if ($data) {
@@ -94,6 +99,7 @@ class receta extends fs_model {
       $this->producto_res   = '';
       $this->idarticulo     = '';
       $this->produccion     = 0;
+      $this->fechap        = 'NULL';
    }
 
    public function load_from_data($data) {
@@ -105,6 +111,7 @@ class receta extends fs_model {
       $this->producto_res   = $data['producto_res'];
       $this->idarticulo     = $data['idarticulo'];
       $this->produccion     = $data['produccion'];
+      $this->fechap         = $data['fechap'];
    }
 
    public function install() {
@@ -205,6 +212,7 @@ class receta extends fs_model {
          ", producto_res = " . $this->var2str($this->producto_res) .
          ", idarticulo = " . $this->var2str($this->idarticulo) .
          ", produccion = " . 0 .
+         ", fechap = " . $this->fechap .
          "  WHERE idreceta = " . $this->var2str($this->idreceta) . ";";
       if ($this->db->exec($sql)) {
              $this->exists = TRUE;
@@ -218,6 +226,7 @@ class receta extends fs_model {
     */
   protected function insertReceta(){
     $this->produccion = 0;
+    $this->fechap = 'NULL';
     $sql = "INSERT INTO " . $this->table_name . " (" . self::$column_list . ") VALUES (" .
             $this->var2str($this->idreceta) . "," .
             $this->var2str($this->descripcion) . "," .
@@ -226,7 +235,8 @@ class receta extends fs_model {
             $this->var2str($this->observaciones) . "," .
             $this->var2str($this->producto_res) . "," .
             $this->var2str($this->idarticulo) . "," .
-            $this->produccion . ");";
+            $this->produccion . "," .
+            $this->fechap . ");";
 
     if ($this->db->exec($sql)) {
        $this->exists = TRUE;
@@ -252,12 +262,9 @@ class receta extends fs_model {
    /*
     * Metodo para actualizar un campo especifico de la tabla de productos Compuestos.
     */
-
     public function actualizaCampo($idcampo,$dato){
-
-        $sql = "UPDATE " . $this->table_name . " SET
-                $idcampo = " . $dato .
-                "  WHERE idreceta = " . $this->var2str($this->idreceta) . ";";
+        $sql = "UPDATE " . $this->table_name . " SET " . $idcampo . " = " . "\" $dato \"" .
+               "  WHERE idreceta = " . $this->var2str($this->idreceta) . ";";
         if ($this->db->exec($sql)) {
             $this->exists = TRUE;
             return TRUE;
@@ -288,10 +295,7 @@ class receta extends fs_model {
     */
   public function buscarRecetas($query = '', $offset = 0)
    {
-       $sql = "SELECT " . self::$column_list . " FROM " . $this->table_name;
-        $separador = ' WHERE';
-        $sql .= $separador . " (idreceta = " . $this->var2str($query) . ")";
-
+      $sql = "SELECT * FROM " . $this->table_name;
       $inglist = $this->all_from($sql, $offset);
       return $inglist;
   }

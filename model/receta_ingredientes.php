@@ -19,16 +19,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  *
- *
  */
 
 class receta_ingrediente extends fs_model {
-
+  /**
+   * [public valor autoimcremental como indice idetificador de la receta producto compuesto]
+   * @var type integer
+   */
    public $id;
+   /**
+    * [Identificador del codigo de la reeta o producto compuesto]
+    * @var type varchar(6)
+    */
    public $idrecetar;
-   public $idarticulor;
+   /**
+    * public clave foranea de referencia articulo en la tabla articulo de facturacion base
+    * @var type varchar(18)
+    */
+  public $idarticulor;
+
    public $necesarios;
+
    public $idlinea;
+
    private static $column_list;
    private static $column_ri;
    private $exists;

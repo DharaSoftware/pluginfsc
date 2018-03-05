@@ -28,50 +28,69 @@ require_model('receta.php');
 require_model('receta_ingrediente');
 require_model('receta_produccion');
 
+
+
 class acompuesto extends fs_controller {
 
-   public function __construct() {
+    public function __construct() {
 
-      parent::__construct(__CLASS__, 'Productos Compuestos', 'ventas');
-   }
+          parent::__construct(__CLASS__, 'Productos Compuestos', 'ventas');
+       }
 
-   public $resultados = array();
-   public $ref;
+       public $resultados = array();
+       public $ref;
 
-   protected function private_core() {
-      // configure delete action
-      $this->allow_delete = $this->user->allow_delete_on(__CLASS__);
-      /*Load data with estructure data*/
-      parent::private_core();
+    /**
+     * [private_core]
+     * @method private_core
+     * @return [type]
+     */
+    protected function private_core() {
+          // configure delete action
+          $this->allow_delete = $this->user->allow_delete_on(__CLASS__);
+          /*Load data with estructure data*/
+          parent::private_core();
 
-      if ((isset($_GET['eliminar'])) && ($_GET['eliminar'] = 'TRUE')) {
-          $idrec = $_POST['refe'];
-          $this->eliminarReceta($idrec);
-  		}else{
-          $this->listadoReceta();
-  		}
-   }
+          if ((isset($_GET['eliminar'])) && ($_GET['eliminar'] = 'TRUE')) {
+              $idrec = $_POST['refe'];
+              $this->eliminarReceta($idrec);
+      		}else{
+              $this->listadoReceta();
+      		}
+       }
+
+   /**
+    * listadoReceta metodo de entrada por defecto Productos compuestos
+    * @method listadoReceta
+    * @return type void
+    */
+
    public function listadoReceta (){
-      $this->resultados = $this->db->select("SELECT * FROM receta;");
-      
-  }
+      $receta = new receta();
+      $this->resultados = $receta->buscarRecetas();
+      unset($recta);
+    }
+  /**
+   * [eliminarReceta description]
+   * @method eliminarReceta
+   * @param  [type]         $ref [description]
+   * @return [type]              [description]
+   */
   protected function eliminarReceta($ref){
     if ($ref != '') {
       $ingred = new receta_ingrediente();
       $ingred->idrecetar = $ref;
-      if ($ingred->delete()) {
-        $this->new_message("Ingredientes exitosamente eliminados");
-        $prod = new receta_produccion();
-        $prod->idrecetar = $ref;
-        $prod->delete();
-        $receta = new receta();
-        $receta->idreceta = $ref;
-        if ($receta->delete()) {
-            $this->new_message("Receta e ingredientes eliminados con exito...");
-            $this->listadoReceta();
-
-        }
+      $ingred->delete();
+      $this->new_message("Ingredientes exitosamente eliminados");
+      $prod = new receta_produccion();
+      $prod->idrecetar = $ref;
+      $prod->delete();
+      $receta = new receta();
+      $receta->idreceta = $ref;
+      if ($receta->delete()) {
+        $this->new_message("Receta e ingredientes eliminados con exito...");
+        $this->listadoReceta();
       }
     }
   }
- }
+}

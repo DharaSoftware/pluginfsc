@@ -263,14 +263,14 @@ function add_articulo(ref, desc, coste, stock, necesarios)
             "\" autocomplete=\"off\" value=\"" + coste + "\"/></td>\n\
 	  <td><input type=\"" + input_number + "\" step=\"any\" id=\"stock_" + numlineas + "\" class=\"form-control text-left\" name=\"stock_" + numlineas +
             "\" autocomplete=\"off\" value=\"" + stock + "\"/></td>\n\
-      <td><input type=\"" + input_number + "\" step=\"any\" id=\"neces_" + numlineas + "\" class=\"form-control text-left\" name=\"neces_" + numlineas +
+      <td><input type=\"" + number + "\" step=\"any\" id=\"neces_" + numlineas + "\" class=\"form-control text-left\" name=\"neces_" + numlineas +
             "\" autocomplete=\"off\" value=\"" + necesarios + "\"/></td>\n\
       <td><button class=\"btn btn-sm btn-danger\" type=\"button\" onclick=\"$('#linea_" + numlineas + "').remove();recalcular();\">\n\
          <span class=\"glyphicon glyphicon-trash\"></span></button></td>\n\</tr>");
     numlineas += 1;
     $("#modal_articulos").modal('hide');
     $("#desc_" + (numlineas - 1)).select();
-    //document.f_new_receta.nlinea.value = numlineas;
+    document.f_new_receta.nlinea.value = numlineas;
     //var nFilas = $("#lineas_doc tr").length;
     return false;
 }
@@ -309,7 +309,7 @@ function add_linea_libre()
             "\" autocomplete=\"off\" value=\"\"/></td>\n\
     <td><input type=\"" + input_number + "\" step=\"any\" id=\"stock_" + numlineas + "\" class=\"form-control text-left\" name=\"stock_" + numlineas +
             "\" autocomplete=\"off\" value=\"\"/></td>\n\
-      <td><input type=\"" + input_number + "\" step=\"any\" id=\"neces_" + numlineas + "\" class=\"form-control text-left\" name=\"neces_" + numlineas +
+      <td><input type=\"" + number + "\" step=\"any\" id=\"neces_" + numlineas + "\" class=\"form-control text-left\" name=\"neces_" + numlineas +
             "\" autocomplete=\"off\" value=\"\"/></td>\n\
       <td><button class=\"btn btn-sm btn-danger\" type=\"button\" onclick=\"$('#linea_" + numlineas + "').remove();recalcular();\">\n\
          <span class=\"glyphicon glyphicon-trash\"></span></button></td>\n\</tr>");
@@ -584,19 +584,17 @@ $(document).ready(function () {
         document.f_nuevo_articulo.referencia.select();
     });
 
-    if(window.location.hash.substring(1) == 'Producir') {
+  /*    if(window.location.hash.substring(1) == 'Producir') {
          show_producir();
       }
     $("#b_produccion").click(function(event) {
          event.preventDefault();
          show_producir();
       });
-    var nlineas = $("#lineas_doc tr").length;
-    document.f_new_receta.nlinea.value = nlineas;
-});
 
-function show_producir()
-{
-   $("#modal_producir").modal('show');
-   document.fp_producir.fp_cantidad.focus();
-}
+ $("#lineas_doc").on("change", "tr", function(event) {
+      event.preventDefault();
+      var nlineas = $("#lineas_doc tr").length;
+      document.f_new_receta.nlinea.value = nlineas;
+    });*/
+});

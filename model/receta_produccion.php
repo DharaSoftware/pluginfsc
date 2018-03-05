@@ -25,7 +25,8 @@
  */
 class receta_produccion extends fs_model {
 
-   public $id;
+
+  public $id;
    public $idrecetar;
    public $producidos;
    public $fecha;
@@ -33,10 +34,10 @@ class receta_produccion extends fs_model {
    private static $column_list;
 
    public function __construct($data = FALSE) {
-      parent::__construct('receta_produccion');
-      SELF::$column_list ='idrecetar,producido,fecha';
+   parent::__construct('receta_produccion');
+   SELF::$column_list = 'idrecetar,producidos,fecha';
 
-      if ($data) {
+   if ($data) {
          $this->load_from_data($data);
       } else {
          $this->clear();
@@ -61,7 +62,7 @@ class receta_produccion extends fs_model {
       $this->id = '';
       $this->idrecetar = '';
       $this->producidos = '';
-      $this->fecha = '';
+      $this->fecha = 'NULL';
    }
 
    public function load_from_data($data) {
@@ -85,17 +86,19 @@ class receta_produccion extends fs_model {
         }
         return TRUE;
        */
-      return parent::test();
+      //return parent::test();
    }
 
    /**
-    * Actualiza  en la base de datos los datos la Receta
+    * Actualiza  en la base de datos los datos de produccion de la Receta
+    * o producto compuesto
     * @return boolean
     */
    protected function updateProduccion() {
      $sql = "UPDATE " . $this->table_name . " SET
-            producido = " . $this->producidos .
-         ", idalmacening = " . $this->fecha .
+            idrecetar = " . $this->idrecetar .
+         ", producidos = " . $this->producidos .
+         ", fecha = " . $this->fecha .
          "  WHERE id = " . $this->var2str($this->id) . ";";
 
       if ($this->db->exec($sql)) {
@@ -110,11 +113,11 @@ class receta_produccion extends fs_model {
     */
    protected function insertProduccion(){
 
-    $sql = "INSERT INTO " . $this->table_name . " (" . $this->column_list . ") VALUES (" .
+    $sql = "INSERT INTO " . $this->table_name . " (" . SELF::$column_list . ") VALUES (" .
             $this->var2str($this->idrecetar) . "," .
             $this->producidos . "," .
-            $this->fecha . ");";
-
+            "\" $this->fecha\"" . ");";
+    
     if ($this->db->exec($sql)) {
        $this->exists = TRUE;
        return TRUE;
@@ -126,8 +129,7 @@ class receta_produccion extends fs_model {
     * @return boolean
     */
    public function save() {
-       if ($this->test()) {
-         if ($this->exists()) {
+        if ($this->exists()) {
             if ($this->updateProduccion()){
               $this->new_message("produccion Receta actualizada correctamente....");
               return TRUE;
@@ -137,8 +139,7 @@ class receta_produccion extends fs_model {
                 return TRUE;
               }
            }
-        }
-       return FALSE;
+        return FALSE;
    }
 
    public function delete()

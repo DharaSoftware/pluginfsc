@@ -38,10 +38,10 @@ class articulo extends FacturaScripts\model\articulo {
   public function buscaArticulo($ref)
   {
     $this->referencia = $ref;
-      $art = $this->db->select("SELECT * FROM $this->table_name WHERE referencia = " . $this->var2str($this->referencia) . ";");
-      if ($art){
+    $art = $this->db->select("SELECT * FROM $this->table_name WHERE referencia = " . $this->var2str($this->referencia) . ";");
+    if ($art){
         return new \articulo($art[0]);
-      }
+    }
   }
   /**
    * Metodo Localizar articulos
@@ -63,12 +63,11 @@ class articulo extends FacturaScripts\model\articulo {
 
   public function actualizaStock($stock_f){
 
-    $sql = "UPDATE $this->table_name SET stockfis = " . $st_act . "  WHERE referencia = " . $this->var2str($this->referencia) . ";";
-    if ($this->db->exec($sql)) {
-        $this->exists = TRUE;
-        return TRUE;
-    }
-    return FALSE;
+      $sql = "UPDATE $this->table_name SET stockfis = " . $stock_f . "  WHERE referencia = " . $this->var2str($this->referencia) . ";";
+      if ($this->db->exec($sql)) {
+          return TRUE;
+      }
+      return FALSE;
   }
   /**
    *  Metodo recupera la referencia del articulo

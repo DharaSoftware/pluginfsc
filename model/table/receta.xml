@@ -45,6 +45,11 @@
     <tipo>integer</tipo>
     <nulo>YES</nulo>
   </columna>
+  <columna>
+    <nombre>fechap</nombre>
+    <tipo>datetime</tipo>
+    <nulo>YES</nulo>
+  </columna>
   <restriccion>
     <nombre>receta_pkey</nombre>
     <consulta>PRIMARY KEY (idreceta)</consulta>

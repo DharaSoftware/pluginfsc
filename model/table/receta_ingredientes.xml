@@ -23,7 +23,7 @@
   </columna>
   <columna>
     <nombre>necesarios</nombre>
-    <tipo>integer</tipo>
+    <tipo>float</tipo>
     <nulo>NO</nulo>
   </columna>
   <columna>
@@ -36,3 +36,4 @@
     <consulta>PRIMARY KEY (id)</consulta>
   </restriccion>
 </tabla>
+

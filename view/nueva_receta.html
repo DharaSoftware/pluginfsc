@@ -34,7 +34,7 @@
   <!--Forma de entrada de Datos de la receta-->
   <form id="nreceta" name="f_new_receta" action="{$fsc->url()}&n_receta=nc_insert&gm_receta={$fsc->m_receta}" method="post">
     <input id="nr_referencia" name="nr_idreceta" value="{$fsc->receta->idreceta}" type="hidden" />
-    <input id="nlinea" name="nlinea"  value="$('#lineas_doc tr').length;" type="hidden" />
+    <input id="nlinea" name="nlinea"  value="0" type="hidden" />
     <div class="row" style="margin-top: 15px;">
       <div class="form-group">
         <div class="col-xs-4"><b>Descripción</b>
@@ -44,7 +44,7 @@
           <input type="text" name="nr_articulo_res" class="form-control" value="{$fsc->receta->producto_res}" autocomplete="off" required="" />
         </div>
         <div class="col-xs-2"><b>Cantidad</b>
-          <input type="text" name="nr_cantidad" class="form-control" placeholder="Cantidad" autocomplete="off"  value="1" />
+          <input type="input_number" name="nr_cantidad" class="form-control" placeholder="Cantidad" autocomplete="off"  value="1" />
         </div>
       </div>
     </div>
@@ -112,5 +112,5 @@
 </div>
 {/if}
 {include="footer"}
-{include="modal_buscar_articulo"}
 {include="modal_producir"}
+{include="modal_buscar_articulo"}

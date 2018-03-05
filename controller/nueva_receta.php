@@ -20,7 +20,7 @@
  */
 
 /**
- * Description of Entrada al plugin para producir productos Compuestos por medio de Recetas
+ * Plugin facturascripts para producir productos Compuestos por medio de Recetas
  * @author Raul Mercado  rgmercado@gmail.com
  */
 
@@ -86,25 +86,26 @@ class nueva_receta  extends fs_controller {
 	 */
 	private function entradaReceta() {
 		$almacen = new \almacen();
-    $this->familia = new \familia();
-    $this->fabricante = new \fabricante();
-    $this->almacenes = $almacen->all();
-    if(!is_object($this->receta)){
-		  $data = array('idreceta'      => $_POST['referencia'],
-                    'descripcion'   => $_POST['descripcion'],
-                    'producto_res'  => $_POST['articulo_res'],
-						'produccion'    =>  0.0,
-						'idalmacening'  => '',
-						'idalmacenres'  => '',
-						'observaciones' => '',
-						'idarticulo'   => '');
-		  $this->receta = new \receta($data);
-		  $this->msg_error='FALSE';
-    }
-    if ($this->receta->exists($_POST['referencia'])){
-        $this->new_error_msg("Identificador de Receta ya existe....");
-        $this->msg_error='TRUE';
-    }
+        $this->familia = new \familia();
+        $this->fabricante = new \fabricante();
+        $this->almacenes = $almacen->all();
+        if(!is_object($this->receta)){
+            $data = array('idreceta'      => $_POST['referencia'],
+                        'descripcion'   => $_POST['descripcion'],
+                        'producto_res'  => $_POST['articulo_res'],
+                            'produccion'    =>  0.0,
+                            'fechap'        => '',
+                            'idalmacening'  => '',
+                            'idalmacenres'  => '',
+                            'observaciones' => '',
+                            'idarticulo'   => '');
+            $this->receta = new \receta($data);
+            $this->msg_error='FALSE';
+        }
+        if ($this->receta->exists($_POST['referencia'])){
+            $this->new_error_msg("Identificador de Receta ya existe....");
+            $this->msg_error='TRUE';
+        }
 	}
 
   /**
@@ -140,7 +141,8 @@ class nueva_receta  extends fs_controller {
         $rect->producto_res = $_POST['nr_articulo_res'];
         $rect->observaciones = $_POST['nr_observaciones'];
         $rect->idarticulo =  $this->cod_art;
-        $rect->produccion  =   0;
+        $rect->produccion  =   0.0;
+        $rect->fechap   = "NULL";
         //$rect->necesarios = $_POST['nr_cantidad'];
         if ($rect->save()) {
             $this->nreceta = TRUE;
@@ -217,106 +219,127 @@ class nueva_receta  extends fs_controller {
    * Metodo para generar produccion, la cantidad de producto a producir
    * @return void
    */
-  private function producir (){
-    /*..Recojo los valores de la forma proucir..*/
+  private function producir(){
+    /*..Recojo los valores de la forma producir..*/
     $p_idrec = $_POST['fp_idreceta'];
     $p_idart = $_POST['fp_idarticulo'];
     $p_cant = $_POST['fp_cantidad'];
-
     if (($p_idrec != '') && ($p_idart != '')) {
-      $receta = new receta();
-      if ($receta->exists()) {
-            $this->registraProduccion($p_idrec,$p_cant); // Registro produccion en tabla receta_produccion
+        $receta = new receta();
+        $receta->idreceta = $p_idrec;
+        if ($receta->exists()) {
             $campo = 'produccion';
-            $receta->actualizacampo($campo,$p_cant); // Actualiza la ultima cantidad producida en la table Receta
-            $this->actualizarStockArt($p_idrec,$p_cant); //Actualiza el inventario en el stock para cada articulo ingrediente
-      }else {
-        $this->new_error_msg("La Receta no existe....");
-      }
+            if ($receta->actualizaCampo($campo,$p_cant)){
+                $fecha = Date("Y-m-d H:i:s");
+                $campo0 = 'fechap';
+              if (!$receta->actualizaCampo($campo0,$fecha)) {
+                  $this->new_error_msg("no actualizo fecha");
+              }
+                 // Actualiza la ultima cantidad producida en la table Receta
+                $this->registraProduccion($p_idrec,$p_cant); // Registro produccion en tabla receta_produccion
+                $this->actualizarStockArt($p_idrec,$p_cant); //Actualiza el inventario en el stock para cada articulo ingrediente
+            }else{
+                $this->new_error_msg("No pudo actializar Producción en la Receta");
+            }
+        } else {
+            $this->new_error_msg("La Receta o el Articulo Resultante no existe....");
+        }
     }
+    header("Location: index.php?page=acompuesto");
   }
 
-/**
- * registraProduccion
- * Metodo para registrar la produccion en la tabla receta_produccion
- * @param mixed $rpidrec
- * @param mixed $rpcant
- * @return void
- */
-private function registraProduccion($rpidrec,$rpcant){
-
-  $rec_pro = new receta_produccion();
-  $rec_pro->idrecetar = $rpidrec;
-  $rec_pro->producidos = $rpcant;
-  $rec_pro->fecha = date('Y-m-d H:i:s');
-  if ($rec_pro->save()) {
-    $this->new_message("Produccion registrada correctamente....");
-    return TRUE;
-  }else{
-    $this->new_error_msg("No se pudo registrar la produccion, verifique....");
-    return FALSE;
-  }
-}
-
-/**
- * actualizarStockArt
- * Metodo para actualizar Stock del Articulo resultante de la Receta
- * @param mixed $idr
- * @param mixed $cant
- * @return void
- */
-private function actualizarStockArt($idr,$cant) {
-    $array_ing = array();
-    $ing_stk = new receta_ingrediente();
-    $array_ing = $ing_stk->buscarIngredientes($idr, $offset = 0);
-
-    for ($i=0; $i < count($array_ing); $i++) {
-      $this->seekArticulo($array_ing[$i]->idarticulo,$array_ing[$i]->necesarios);
+    /**
+     * registraProduccion
+     * Metodo para registrar la produccion en la tabla receta_produccion
+     * @param mixed $rpidrec
+     * @param mixed $rpcant
+     * @return void
+     */
+    private function registraProduccion($idr,$cant){
+        $rec_pro = new receta_produccion();
+        $rec_pro->idrecetar = $idr;
+        $rec_pro->producidos = $cant;
+        $rec_pro->fecha = date("Y-m-d H:i:s");
+        if ($rec_pro->save()) {
+            $this->new_message("Produccion registrada correctamente....");
+            return TRUE;
+        }else{
+            $this->new_error_msg("No se pudo registrar la produccion, verifique....");
+            return FALSE;
+        }
     }
-}
-/**
- * modificaReceta funcion
- * Permite modificar la receta
- * @param  [type varchar] $ref [identificador de la receta]
- * @return [void]
- */
-private function modificaReceta($ref)
-{
-  $almacen = new \almacen();
-  $this->familia = new \familia();
-  $this->fabricante = new \fabricante();
-  $this->almacenes = $almacen->all();
-  $m_result = array(); // arreglo generado de la busqueda de la receta y sus ingredientes
-  $this->m_receta = "TRUE"; //Variable de control de la vista
-  $this->msg_error='FALSE';
-  $brec = new receta();
-  $brec->idreceta = $ref;
-  $this->receta = $brec->buscarUnaReceta($brec->idreceta);
-  $this->receta->produccion  =   0;
-  $ingred = new receta_ingrediente();
-  $this->i_resul = $ingred->buscarIngredientes($brec->idreceta);
-  foreach ($this->i_resul as $ingre0) {
-     $art = new \articulo;
-     $art0 = $art->buscaArticulo($ingre0->idarticulor);
-     $this->resultado[] = array('id'          => $ingre0->id,
-                                 'idrecetar'   => $ingre0->idrecetar,
-                                 'idarticulor' => $ingre0->idarticulor,
-                                 'necesarios'  => $ingre0->necesarios,
-                                 'idlinea'     => $ingre0->idlinea,
-                                 'descripcion' => $art0->descripcion,
-                                 'preciocoste' => $art0->preciocoste,
-                                 'stockfis'    => $art0->stockfis,
-                                );
-    unset($art);
+
+    /**
+     * actualizarStockArt
+     * Metodo para actualizar Stock del Articulo resultante de la Receta
+     * @param mixed $idr
+     * @param mixed $cant
+     * @return void
+     */
+    private function actualizarStockArt($idr,$cant) {
+        $ing = array();
+        $receta_i = new receta_ingrediente();
+        $receta_i->idrecetar = $idr;
+        $ing = $receta_i->buscarIngredientes($idr);
+        foreach ($ing as $ingre0) {
+            $art = new \articulo;
+            $art0 = $art->buscaArticulo($ingre0->idarticulor);
+            $nece = (float) $ingre0->necesarios;
+            $stock = (float) $art0->stockfis;
+            $cantc = (float) $cant;
+            if (($nece*$cantc) <= $stock){
+                $resta = ($stock - $nece*$cantc);
+                $resta0 = round($resta, 0, PHP_ROUND_HALF_DOWN);
+                $art0->actualizaStock($resta0);
+            } else {
+                $this->new_error_msg("No hay stock Suficiente...");
+            }
+            unset($art);
+        }
     }
-  }
+
+    /**
+     * modificaReceta funcion
+     * Permite modificar la receta
+     * @param  [type varchar] $ref [identificador de la receta]
+     * @return [void]
+     */
+    private function modificaReceta($ref)
+    {
+    $almacen = new \almacen();
+    $this->familia = new \familia();
+    $this->fabricante = new \fabricante();
+    $this->almacenes = $almacen->all();
+    $this->m_receta = "TRUE"; //Variable de control de la vista
+    $this->msg_error='FALSE';
+    $nreceta = new receta();
+    $nreceta->idreceta = $ref;
+    $this->receta = $nreceta->buscarUnaReceta($nreceta->idreceta);
+    $this->receta->produccion  =   0;
+    $ingred = new receta_ingrediente();
+    $this->i_resul = $ingred->buscarIngredientes($nreceta->idreceta);
+    foreach ($this->i_resul as $ingre0) {
+        $art = new \articulo;
+        $art0 = $art->buscaArticulo($ingre0->idarticulor);
+        $this->resultado[] = array('id'           => $ingre0->id,
+                                    'idrecetar'   => $ingre0->idrecetar,
+                                    'idarticulor' => $ingre0->idarticulor,
+                                    'necesarios'  => $ingre0->necesarios,
+                                    'idlinea'     => $ingre0->idlinea,
+                                    'descripcion' => $art0->descripcion,
+                                    'preciocoste' => $art0->preciocoste,
+                                    'stockfis'    => $art0->stockfis,
+                                    );
+        unset($art);
+        }
+    }
   /**
    * [Permite guardar las modificaciones de una receta]
    * @method guardarModificarReceta
    * @return [void] [description]
    */
 
-  private function guardarModificarReceta(){
+private function guardarModificarReceta(){
     $this->msg_error='FALSE';
     if ($_POST['nr_idreceta'] != '') {
       $this->cod_art = $this->crearArticulo($_POST['nr_idreceta'],$_POST['nr_articulo_res']); // Creamos el articulo resultante
@@ -350,7 +373,7 @@ private function modificaReceta($ref)
       $rect->observaciones = $_POST['nr_observaciones'];
       $rect->idarticulo =  $this->cod_art;
       $rect->produccion  =   0;
-      $rect->necesarios = $_POST['nr_cantidad'];
+      $rect->fechap = 'NULL';
       if ($rect->save()) {
           $this->nreceta = TRUE;
           $this->new_message("Receta creada correctamente....");
@@ -367,10 +390,8 @@ private function modificaReceta($ref)
           $ring->idrecetar = $rect->idreceta;
           $ring->delete();
       }
-
     }
   }
-
   /**
    * new_search
    * Metodo tomado de facturacion_base, para la busqueda de articulos

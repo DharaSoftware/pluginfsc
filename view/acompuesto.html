@@ -116,7 +116,7 @@
 
   <div class="container-fluid" style="margin-top: 15px;">
   <div class="table-responsive">
-    {if="count($fsc->resultados)>1"}
+  {if="$fsc->resultados"}
     <table class="table table-hover">
       <thead>
         <tr>
@@ -126,23 +126,21 @@
           <th class="text-left">Ultima Produccion</th>
         </tr>
       </thead>
-      <tr>
-        {loop="$fsc->resultados"}
-        <tr>
-        <td name="{$value['idreceta']}" value="{$value['idreceta']}"><a href="index.php?page=nueva_receta&m_receta=TRUE&idr={$value['idreceta']}&gm_receta">{$value['idreceta']}</a></td>
-        <td>{$value['descripcion']}</td>
-        <td>{$value['produccion']}</td>
-        <td>{$value['produccion']}</td>
-        <td><button class="btn btn-sm btn-danger" type="button" onclick="eliminarReceta('{$value['idreceta']}')">
-           <span class="glyphicon glyphicon-trash"></span></button></td>
-      </tr>
-        {/loop}
-      </tr>
+      {loop="$fsc->resultados"}
+            <tr>
+                <td name="{$value->idreceta}" value="{$value->idreceta}"><a href="index.php?page=nueva_receta&m_receta=TRUE&idr={$value->idreceta}&gm_receta">{$value->idreceta}</a></td>
+                <td>{$value->descripcion}</td>
+                <td>{$value->produccion}</td>
+                <td>{$value->fechap}</td>
+                <td><button class="btn btn-sm btn-danger" type="button" onclick="eliminarReceta('{$value->idreceta}')">
+                   <span class="glyphicon glyphicon-trash"></span></button></td>
+             </tr>
+      {/loop}
     </table>
     {else}
-    <tr class="warning">
-      <td colspan="7">Ningun Receta encontrado. Pulsa el botón <b>Nuevo</b> para crear uno.</td>
-    </tr>
+      <tr class="warning">
+        <td colspan="7">Ningun Receta encontrado. Pulsa el botón <b>Nuevo</b> para crear uno.</td>
+      </tr>
     {/if}
   </div>
 </div>
