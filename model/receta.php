@@ -20,8 +20,7 @@
 
 /**
  * Description of receta el modelo para productos compuestos
- *
- * @author Raul Mercado
+  * @author Raul Mercado @mail rgmercado@gmail.com
  */
 class receta extends fs_model {
 
@@ -62,12 +61,12 @@ class receta extends fs_model {
    public $idarticulo;
      /**
     * Cantidad de articulos a producir por la receta.
-    * @var double
+    * @var float
     */
    public $produccion;
    /**
-    * [Fecha de la ultima Produccion]
-    * @var [type date]
+    * Fecha de la ultima Produccion
+    * @var type datetime
     */
    public $fechap;
 
@@ -261,6 +260,7 @@ class receta extends fs_model {
    }
    /*
     * Metodo para actualizar un campo especifico de la tabla de productos Compuestos.
+    * @return boolean
     */
     public function actualizaCampo($idcampo,$dato){
         $sql = "UPDATE " . $this->table_name . " SET " . $idcampo . " = " . "\" $dato \"" .
@@ -273,7 +273,7 @@ class receta extends fs_model {
    }
    /*
     * Devuelve un arreglo de instancias de objetos de la clase de receta
-    * @return \receta
+    * @return array object \receta
     */
    private function all_from($sql, $offset = 0, $limit = FS_ITEM_LIMIT)
    {

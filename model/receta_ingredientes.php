@@ -37,14 +37,31 @@ class receta_ingrediente extends fs_model {
     * @var type varchar(18)
     */
   public $idarticulor;
-
-   public $necesarios;
-
+  /**
+   * public la cantidad necesaria de del ingrediente en la receta.
+   * @var type integer
+   */
+  public $necesarios;
+  /**
+   * public posicion de la linea de ingrediente en la receta
+   * @var type integer
+   */
    public $idlinea;
 
+   /**
+    * variables globales utilizadas en la clase
+    * @var type array $column_lis .
+    * @var type array $column_ri.
+    */
    private static $column_list;
    private static $column_ri;
    private $exists;
+
+   /**
+    * Metodo constrcutor de la clase
+    * @method __construct
+    * @param  boolean  $data arreglo de valores iniciales para instanciar
+    */
 
    public function __construct($data = FALSE) {
       parent::__construct('receta_ingredientes');
@@ -139,6 +156,10 @@ class receta_ingrediente extends fs_model {
          }
       return FALSE;
    }
+   /**
+    * Elimina los ingrediente para una receta
+    * @return boolean
+    */
    public function delete()
    {
        $sql = "DELETE FROM " . $this->table_name . " WHERE idrecetar = " . $this->var2str($this->idrecetar) . ";";
@@ -161,7 +182,12 @@ class receta_ingrediente extends fs_model {
           return FALSE;
        }
    }
-
+   /**
+    * Devuelve un array con los ingredientes de la receta
+    * @param string $sql
+    * @param integer $offset
+    * @return array de objetos \receta_ingrediente
+    */
    private function all_from($sql, $offset = 0, $limit = FS_ITEM_LIMIT)
    {
        $artilist = array();

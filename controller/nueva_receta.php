@@ -30,6 +30,10 @@ require_model('receta_produccion');
 require_model('articulo');
 require_model('almacen');
 
+/**
+ * nueva_receta controlador para la gestion de productos Compuestos
+ * type class
+ */
 
 class nueva_receta  extends fs_controller {
   public $almacenes;
@@ -110,7 +114,7 @@ class nueva_receta  extends fs_controller {
 
   /**
    * newReceta
-   * Este metodo permite guarar la nueva receta con sus ingredientes
+   * Este metodo permite guardar la nueva receta con sus ingredientes
    * @return void
    */
   private function newReceta() {

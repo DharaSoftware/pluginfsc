@@ -19,21 +19,40 @@
  */
 
 /**
- * Description of receta_produccion.php
- *
- * @author Raul Mercado, rgmercado@gmai.com
+ * Modelo de receta_produccion.php
+  * @author Raul Mercado, rgmercado@gmai.com
  */
 class receta_produccion extends fs_model {
-
-
+  /**
+   * Indice Autoincremental de la tabla receta_produccion
+   * @var type integer
+   */
   public $id;
-   public $idrecetar;
-   public $producidos;
-   public $fecha;
-   private $exists;
-   private static $column_list;
+  /**
+   * codigo identificador de la receta al cual pertenece el ingrediente
+   * @var type varchar(6)
+   */
+  public $idrecetar;
+  /**
+   * Cantidad Producida basada en la receta
+   * @var type integer
+   */
+  public $producidos;
+  /**
+   * Fecha en la que se genera la produccion
+   * @var type datetime
+   */
+  public $fecha;
 
-   public function __construct($data = FALSE) {
+  private $exists;
+  private static $column_list;
+  /**
+   * Metodo Contructor de la clase
+   * @method __construct
+   * @param  boolean     $data [description]
+   */
+
+  public function __construct($data = FALSE) {
    parent::__construct('receta_produccion');
    SELF::$column_list = 'idrecetar,producidos,fecha';
 
@@ -117,7 +136,7 @@ class receta_produccion extends fs_model {
             $this->var2str($this->idrecetar) . "," .
             $this->producidos . "," .
             "\" $this->fecha\"" . ");";
-    
+
     if ($this->db->exec($sql)) {
        $this->exists = TRUE;
        return TRUE;

@@ -1,2 +1,5 @@
-El plugin acompuesto permite crear productos compuestos utilizando recetas cuyos ingredientes son art�culos existentes
+El plugin acompuesto permite crear productos compuestos utilizando recetas cuyos ingredientes son articulos existentes. Requiere la tabla articulo y su modelo para funcionar completamente.
+Permite crear la receta con sus ingredientes; una vez creada la receta puedes modificar y producir.
+Plugins para la version FacturaScripts 2017.
+
 Licencia LGPL 3
