@@ -22,7 +22,7 @@
             <td><input type="input_number" step="any" id="coste_{$value['idlinea']}" class="form-control text-left" name="coste_{$value['idlinea']}" autocomplete="off" value="{$value['preciocoste']}" /></td>
             <td><input type="input_number" step="any" id="stock_{$value['idlinea']}" class="form-control text-left" name="stock_{$value['idlinea']}" autocomplete="off" value="{$value['stockfis']}" /></td>
             <td><input type="number" step="any" id="neces_{$value['idlinea']}" class="form-control text-left" name="neces_{$value['idlinea']}" autocomplete="off" value="{$value['necesarios']}" /></td>
-            <td><button class="btn btn-sm btn-danger" type="button" onclick="$('#linea_{$value['idlinea']}').remove();" />
+            <td><button class="btn btn-sm btn-danger" type="button" onclick="$('#linea_{$value['idlinea']}').remove();actualizaNlinea();" />
             <span class="glyphicon glyphicon-trash"></span></button></td>
           </tr>
         {/loop}

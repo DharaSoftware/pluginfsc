@@ -31,9 +31,10 @@
       <h2><span class="glyphicon glyphicon-list-alt"></span>&nbsp;{$fsc->receta->idreceta}: &nbsp;{$fsc->receta->descripcion}</h2>
     </div>
   </div>
-  <!--Forma de entrada de Datos de la receta-->
+  <!--Forma de entrada de Datos de la nueva receta o a modificar-->
   <form id="nreceta" name="f_new_receta" action="{$fsc->url()}&n_receta=nc_insert&gm_receta={$fsc->m_receta}" method="post">
     <input id="nr_referencia" name="nr_idreceta" value="{$fsc->receta->idreceta}" type="hidden" />
+    <input id="nr_refart" name="nr_refart" value="{$fsc->receta->idarticulo}" type="hidden" />
     <input id="nlinea" name="nlinea"  value="0" type="hidden" />
     <div class="row" style="margin-top: 15px;">
       <div class="form-group">

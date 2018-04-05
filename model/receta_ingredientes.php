@@ -94,11 +94,12 @@ class receta_ingrediente extends fs_model {
    }
 
    public function load_from_data($data) {
-      $this->id = $data['id'];
-      $this->idrecetar = $data['idrecetar'];
-      $this->idarticulor = $data['idarticulor'];
-      $this->necesarios = $data['necesarios'];
-      $this->idlinea = $data['idlinea'];
+      if (!empty($data)) {
+			foreach ($data as $property => $argument) {
+				$this->{$property} = $argument;
+			}
+		}
+
    }
 
    public function install() {

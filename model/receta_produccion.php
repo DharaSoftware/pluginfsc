@@ -85,10 +85,11 @@ class receta_produccion extends fs_model {
    }
 
    public function load_from_data($data) {
-      $this->id = $data['id'];
-      $this->idrecetar = $data['idrecetar'];
-      $this->producidos = $data['producidos'];
-      $this->fecha = $data['fecha'];
+        if (!empty($data)) {
+			foreach ($data as $property => $argument) {
+				$this->{$property} = $argument;
+			}
+	    }
    }
 
    public function install() {

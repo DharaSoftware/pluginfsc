@@ -1,7 +1,6 @@
 <?php
-
 /*
- * This file is part of FacturaScripts
+ * This file del plugin acompuestos (productos compuestos)
  * Copyright (C) 2013-2017  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -69,7 +68,9 @@ class receta extends fs_model {
     * @var type datetime
     */
    public $fechap;
-
+/**
+ * Variables generales utilizadas en el modelo receta
+ */
    private static $column_list;
    private $exists;
    public $r_rec;
@@ -100,19 +101,13 @@ class receta extends fs_model {
       $this->produccion     = 0;
       $this->fechap        = 'NULL';
    }
-
    public function load_from_data($data) {
-      $this->idreceta       = $data['idreceta'];
-      $this->descripcion    = $data['descripcion'];
-      $this->idalmacening   = $data['idalmacening'];
-      $this->idalmacenres   = $data['idalmacenres'];
-      $this->observaciones  = $data['observaciones'];
-      $this->producto_res   = $data['producto_res'];
-      $this->idarticulo     = $data['idarticulo'];
-      $this->produccion     = $data['produccion'];
-      $this->fechap         = $data['fechap'];
+       if (!empty($data)) {
+			foreach ($data as $property => $argument) {
+				$this->{$property} = $argument;
+			}
+		}
    }
-
    public function install() {
       return '';
    }

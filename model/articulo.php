@@ -1,6 +1,6 @@
 <?php
 /*
- * receta_articulo.php
+ * receta_articulo.php file forma parte del plugin acompuesto.
  *
  * Copyright 2018 Raul G Mercado H <rgmercado@PC-Mint>
  *
@@ -76,5 +76,18 @@ class articulo extends FacturaScripts\model\articulo {
   public function getReferencia()
   {
     return $this->referencia;
+  }
+  /*
+   * Metodo para actualizar un campo especifico de la tabla de articulos de facturacion_base.
+   * @return boolean
+   */
+   public function actualizaCampo($idcampo,$dato){
+       $sql = "UPDATE " . $this->table_name . " SET " . $idcampo . " = " . "\" $dato \"" .
+              "  WHERE referencia = " . $this->var2str($this->referencia) . ";";
+       if ($this->db->exec($sql)) {
+           $this->exists = TRUE;
+           return TRUE;
+       }
+       return FALSE;
   }
 }
